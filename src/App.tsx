@@ -35,7 +35,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>HELLO</h1>
+        <div>EDITOR</div>
       </header>
       <main>
         <div className="editor-wrapper">

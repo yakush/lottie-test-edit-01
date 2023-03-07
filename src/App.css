@@ -27,6 +27,13 @@
   color: #61dafb;
 }
 
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -34,4 +41,33 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* ------------------------------------------------------- */
+main {
+  text-align: start;
+}
+.editor-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.player {
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 5px;
+  width: 400px;
+}
+
+.editor {
+  flex: 1;
+  border: 1px solid gray;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 5px;
+}
+
+.editor select {
+  min-width: 100px;
 }

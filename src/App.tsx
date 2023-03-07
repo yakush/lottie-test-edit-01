@@ -14,6 +14,8 @@ function App() {
 
   useEffect(() => {
     (async () => {
+      setLottieJson(undefined);
+      // await new Promise(res=>setTimeout(res,1000))
       const res = await fetch(lottieUrl);
       if (res.ok) {
         const json = await res.json();
@@ -39,17 +41,20 @@ function App() {
         <div className="editor-wrapper">
           {/* ---------------------------------------- */}
           <div className="player">
-            <Player
-              autoplay
-              loop
-              src={lottieUrl}
-              // style={{ height: "300px", width: "300px" }}
-            >
-              <Controls
-                visible={true}
-                buttons={["play", "repeat", "frame", "debug"]}
-              />
-            </Player>
+            {!lottieJson && <div>LOADING JSON</div>}
+            {lottieJson && (
+              <Player
+                autoplay
+                loop
+                src={lottieJson}
+                // style={{ height: "300px", width: "300px" }}
+              >
+                <Controls
+                  visible={true}
+                  buttons={["play", "repeat", "frame", "debug"]}
+                />
+              </Player>
+            )}
           </div>
           {/* ---------------------------------------- */}
 
@@ -93,6 +98,7 @@ function LottieFields({ json }) {
       <ul>
         {layers?.map((layer) => (
           <li
+            key={layer.nm}
             style={{
               margin: 4,
               padding: 4,

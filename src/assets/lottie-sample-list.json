@@ -1,0 +1,8 @@
+{
+  "samples": [
+    { "name": "1", "file": "102708-sangoma.json" },
+    { "name": "2", "file": "111228-skilltonblack.json" },
+    { "name": "3", "file": "137141-sample.json" },
+    { "name": "4", "file": "138116-sample-again.json" }
+  ]
+}

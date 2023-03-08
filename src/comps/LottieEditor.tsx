@@ -14,6 +14,18 @@ const LottieEditor: React.FC<Props> = ({}) => {
   const layers = lottie.json?.layers || [];
   const assets = lottie.json?.assets || [];
 
+  function handleLayerClick(name: string) {
+    lottie.setJson((json) => {
+      const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
+      if (layer) {
+        const temp = layer.ty;
+        layer.ty = layer.tyOld != null ? layer.tyOld : -100;
+        layer.tyOld = temp;
+      }
+      return { ...json };
+    });
+  }
+
   return (
     <>
       <h3>{layers.length} layers</h3>
@@ -21,7 +33,10 @@ const LottieEditor: React.FC<Props> = ({}) => {
       <ul>
         {layers?.map((layer) => (
           <li key={layer.nm} className={styles.item}>
-            <LayerItem layer={layer}></LayerItem>
+            <LayerItem
+              layer={layer}
+              onClick={() => handleLayerClick(layer.nm)}
+            ></LayerItem>
           </li>
         ))}
       </ul>

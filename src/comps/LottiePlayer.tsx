@@ -14,7 +14,7 @@ const LottiePlayer: React.FC<Props> = ({}) => {
     <Player
       autoplay
       loop
-      src={lottie.json}
+      src={lottie.json || ""}
       // style={{ height: "300px", width: "300px" }}
     >
       <Controls visible={true} buttons={["play", "repeat", "frame", "debug"]} />

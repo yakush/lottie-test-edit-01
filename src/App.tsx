@@ -16,9 +16,10 @@ function App() {
         <div className="editor-wrapper">
           <div className="player">
             {lottie.isLoading && <div>LOADING JSON</div>}
-            {lottie.error && <div>ERROR LOADING</div>}
-            {!lottie.isLoading && lottie.json && <LottiePlayer></LottiePlayer>}
+            {!!lottie.error && <div>ERROR LOADING</div>}
+            {!lottie.isLoading && lottie.json && <LottiePlayer />}
           </div>
+
           <div className="editor">
             <LottieFileSelector />
             <hr />

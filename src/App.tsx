@@ -130,7 +130,7 @@ function LottieFields({ json }) {
               borderRadius: 4,
             }}
           >
-            {asset.nm} : {asset.layers?.length || 0} layers
+            ({asset.id}) {asset.nm} : {asset.layers?.length || 0} layers
             <ul>
               {asset.layers?.map((layer) => (
                 <li

@@ -16,6 +16,9 @@ const LayerItem: React.FC<Props> = ({ layer }) => {
       {layer.ty === layerTypes.shape && (
         <div style={{ color: "gray" }}>{layer.shapes?.length || 0} shapes</div>
       )}
+      {layer.ty === layerTypes.precomp && (
+        <div style={{ color: "gray" }}>refID: {layer.refId || ""}</div>
+      )}
     </div>
   );
 };

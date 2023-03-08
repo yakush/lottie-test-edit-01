@@ -1,6 +1,6 @@
 import React from "react";
-import { layerTypes } from "../../enums";
-import { LottieLayer } from "../../types/LottieLayer";
+import { layerTypes } from "../enums";
+import { LottieLayer } from "../types/LottieLayer";
 import styles from './LayerItem.module.css';
 
 type Props = {

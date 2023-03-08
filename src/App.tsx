@@ -1,7 +1,7 @@
 import "./App.css";
-import LottieEditor from "./comps/LottieEditor/LottieEditor";
-import LottieFileSelector from "./comps/LottieFileSelector/LottieFileSelector";
-import LottiePlayer from "./comps/LottiePlayer/LottiePlayer";
+import LottieEditor from "./comps/LottieEditor";
+import LottieFileSelector from "./comps/LottieFileSelector";
+import LottiePlayer from "./comps/LottiePlayer";
 import { useLottieContext } from "./LottieContext";
 
 function App() {

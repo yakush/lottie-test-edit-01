@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import styles from "./LottieFileSelector.module.css";
 
-import lottieSamplesList from "../../assets/lottie-sample-list.json";
-import { useLottieContext } from "../../LottieContext";
+import lottieSamplesList from "../assets/lottie-sample-list.json";
+import { useLottieContext } from "../LottieContext";
 
 type Props = {
   children?: React.ReactNode;

@@ -1,6 +1,7 @@
 import React from "react";
-import { useLottieContext } from "../../LottieContext";
-import LayerItem from "../LayerItem/LayerItem";
+import { useLottieContext } from "../LottieContext";
+import LayerItem from "./LayerItem";
+
 import styles from "./LottieEditor.module.css";
 
 type Props = {

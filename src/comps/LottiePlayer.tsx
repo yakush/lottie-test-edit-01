@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./LottiePlayer.module.css";
 import { Controls, Player } from "@lottiefiles/react-lottie-player";
-import { useLottieContext } from "../../LottieContext";
+import { useLottieContext } from "../LottieContext";
 
 type Props = {
   //children?: React.ReactNode;

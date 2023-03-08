@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { Player, Controls } from "@lottiefiles/react-lottie-player";
 import lottieSamplesList from "./assets/lottie-sample-list.json";
+import LayerItem from "./comps/LayerItem";
 
 // src="https://assets3.lottiefiles.com/packages/lf20_UJNc2t.json"
 
@@ -91,10 +92,12 @@ function App() {
 
 function LottieFields({ json }) {
   const layers = json?.layers || [];
+  const assets = json?.assets || [];
 
   return (
     <>
       <h3>{layers.length} layers</h3>
+
       <ul>
         {layers?.map((layer) => (
           <li
@@ -108,10 +111,43 @@ function LottieFields({ json }) {
               borderRadius: 4,
             }}
           >
-            <div>{layer.nm}</div>
-            <div style={{ color: "gray" }}>
-              {layer.shapes?.length || 0} shapes
-            </div>
+            <LayerItem layer={layer}></LayerItem>
+          </li>
+        ))}
+      </ul>
+
+      <h3>{assets.length} assets</h3>
+      <ul>
+        {assets?.map((asset) => (
+          <li
+            key={asset.id}
+            style={{
+              margin: 4,
+              padding: 4,
+              borderWidth: 1,
+              borderColor: "black",
+              borderStyle: "solid",
+              borderRadius: 4,
+            }}
+          >
+            {asset.nm} : {asset.layers?.length || 0} layers
+            <ul>
+              {asset.layers?.map((layer) => (
+                <li
+                  key={layer.nm}
+                  style={{
+                    margin: 4,
+                    padding: 4,
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderStyle: "solid",
+                    borderRadius: 4,
+                  }}
+                >
+                  <LayerItem layer={layer}></LayerItem>
+                </li>
+              ))}
+            </ul>
           </li>
         ))}
       </ul>

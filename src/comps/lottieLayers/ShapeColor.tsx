@@ -48,7 +48,13 @@ const ShapeColor: React.FC<Props> = ({ color, onclick }) => {
             onclick && onclick();
           }
 
-          return <ShapeColor color={subColor} onclick={handleSubColorClick} />;
+          return (
+            <ShapeColor
+              key={i}
+              color={subColor}
+              onclick={handleSubColorClick}
+            />
+          );
         })}
       </div>
     );

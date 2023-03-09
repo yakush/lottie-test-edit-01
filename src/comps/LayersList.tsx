@@ -14,7 +14,7 @@ const LayersList: React.FC<Props> = ({ layers, onClick, enabled = true }) => {
     <>
       <ul>
         {layers?.map((layer) => (
-          <li key={layer.nm}>
+          <li key={`${layer.ind}__${layer.nm}`}>
             <LayerItem layer={layer} onClick={onClick} enabled={enabled} />
           </li>
         ))}

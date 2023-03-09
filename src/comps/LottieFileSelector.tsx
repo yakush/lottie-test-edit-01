@@ -23,6 +23,8 @@ const LottieFileSelector: React.FC<Props> = ({}) => {
 
     console.log("change lottie", lottieIdx, item.name);
     lottie.loadUrl(url);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lottieIdx]);
 
   const handleSelect = async (event: React.FormEvent) => {

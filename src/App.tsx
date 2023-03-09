@@ -21,9 +21,13 @@ function App() {
           </div>
 
           <div className="editor">
-            <LottieFileSelector />
-            <hr />
-            {!lottie.isLoading && lottie.json && <LottieEditor />}
+            <div className="editor-selector">
+              <LottieFileSelector />
+            </div>
+
+            <div className="editor-editor">
+              {!lottie.isLoading && lottie.json && <LottieEditor />}
+            </div>
           </div>
         </div>
       </main>

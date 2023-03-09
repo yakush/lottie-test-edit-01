@@ -3,20 +3,18 @@
   padding: 4px;
   border: 1px solid black;
   border-radius: 4;
-}
-
-.hidden {
-  background-color: rgb(235, 235, 235);
-  border-color: rgb(183, 183, 183);;
+  transition: margin 50ms ease-in-out;
 }
 
 .root:hover {
-  background-color: rgb(248, 248, 203);
+  /* margin-left: 10px; */
+  /* border-left-style: dotted; */
 }
 .root:active {
-  background-color: rgb(190, 190, 153);
+  /* margin-left: 10px; */
+}
+.hidden {
+  background-color: rgb(235, 235, 235);
+  border-color: rgb(183, 183, 183);
 }
 
-.subText {
-  color: gray;
-}

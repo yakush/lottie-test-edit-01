@@ -1,6 +1,7 @@
 import React from "react";
 import { useLottieContext } from "../LottieContext";
 import LayerItem from "./LayerItem";
+import LayersList from "./LayersList";
 
 import styles from "./LottieEditor.module.css";
 
@@ -17,6 +18,24 @@ const LottieEditor: React.FC<Props> = ({}) => {
   function handleLayerClick(name: string) {
     lottie.setJson((json) => {
       const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
+      console.log(layer);
+      console.log(layer.op);
+
+      if (layer) {
+        const temp = layer.ty;
+        layer.ty = layer.tyOld != null ? layer.tyOld : -100;
+        layer.tyOld = temp;
+      }
+      return { ...json };
+    });
+  }
+
+  function handleAssetLayerClick(name: string) {
+    lottie.setJson((json) => {
+      const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
+      console.log(layer);
+      console.log(layer.op);
+
       if (layer) {
         const temp = layer.ty;
         layer.ty = layer.tyOld != null ? layer.tyOld : -100;
@@ -30,32 +49,25 @@ const LottieEditor: React.FC<Props> = ({}) => {
     <>
       <h3>{layers.length} layers</h3>
 
-      <ul>
-        {layers?.map((layer) => (
-          <li key={layer.nm} className={styles.item}>
-            <LayerItem
-              layer={layer}
-              onClick={() => handleLayerClick(layer.nm)}
-            ></LayerItem>
-          </li>
-        ))}
-      </ul>
+      <LayersList
+        layers={layers}
+        onClick={(layer) => handleLayerClick(layer.nm)}
+      />
 
       <h3>{assets.length} assets</h3>
+      {/* 
       <ul>
         {assets?.map((asset) => (
           <li key={asset.id} className={styles.item}>
             ({asset.id}) {asset.nm} : {asset.layers?.length || 0} layers
-            <ul>
-              {asset.layers?.map((layer) => (
-                <li key={layer.nm} className={styles.item}>
-                  <LayerItem layer={layer}></LayerItem>
-                </li>
-              ))}
-            </ul>
+            <LayersList
+              layers={asset.layers}
+              onClick={(layer) => console.log(asset.id, layer.ind, layer)}
+            />
           </li>
         ))}
       </ul>
+       */}
     </>
   );
 };

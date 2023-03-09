@@ -1,9 +1,9 @@
 {
   "samples": [
     { "name": "sample", "file": "137141-sample.json" },
+    { "name": "car", "file": "138116-sample-again.json" },
     { "name": "sangoma", "file": "102708-sangoma.json" },
     { "name": "skilltonblack", "file": "111228-skilltonblack.json" },
-    { "name": "sample-again", "file": "138116-sample-again.json" },
-    { "name": "error me", "file": "just-an-error.json" }
+    { "name": "-- TEST MISSING FILE --", "file": "just-an-error.json" }
   ]
 }

@@ -11,14 +11,20 @@ const LottiePlayer: React.FC<Props> = ({}) => {
   const lottie = useLottieContext();
 
   return (
-    <Player
-      autoplay
-      loop
-      src={lottie.json || ""}
-      // style={{ height: "300px", width: "300px" }}
-    >
-      <Controls visible={true} buttons={["play", "repeat", "frame", "debug"]} />
-    </Player>
+    <div className={styles.root}>
+      <Player className={styles.player}
+        autoplay
+        loop
+        src={lottie.json || ""}
+        // style={{ height: "300px", width: "300px" }}
+      >
+        <Controls
+         
+          visible={true}
+          buttons={["play", "repeat", "frame", "debug"]}
+        />
+      </Player>
+    </div>
   );
 };
 

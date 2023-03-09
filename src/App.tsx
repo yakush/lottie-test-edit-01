@@ -10,27 +10,28 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>EDITOR</div>
+        <div>LOTTIE EDITOR TEST</div>
       </header>
-      <main>
+      <main className="App-main">
         <div className="editor-wrapper">
-          <div className="player">
+          <div className="player box">
             {lottie.isLoading && <div>LOADING JSON</div>}
             {!!lottie.error && <div>ERROR LOADING</div>}
             {!lottie.isLoading && lottie.json && <LottiePlayer />}
           </div>
 
           <div className="editor">
-            <div className="editor-selector">
+            <div className="editor-selector box">
               <LottieFileSelector />
             </div>
 
-            <div className="editor-editor">
+            <div className="editor-editor box">
               {!lottie.isLoading && lottie.json && <LottieEditor />}
             </div>
           </div>
         </div>
       </main>
+      <footer className="App-footer">Made by Y@K</footer>
     </div>
   );
 }

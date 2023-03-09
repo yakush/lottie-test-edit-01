@@ -1,8 +1,10 @@
 .root {
+  background-color: white;
+  border: 1px solid lightgray;
 }
 
 .player {
-    border: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 .controls {
 }

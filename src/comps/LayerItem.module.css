@@ -1,9 +1,8 @@
 .root {
-  margin: 4px;
-  padding: 4px;
-  border: 1px solid black;
-  border-radius: 4;
+  margin: 10px 0;
   transition: margin 50ms ease-in-out;
+  border: 1px solid black;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.553);
 }
 
 .root:hover {
@@ -16,5 +15,15 @@
 .hidden {
   background-color: rgb(235, 235, 235);
   border-color: rgb(183, 183, 183);
+}
+
+.layerHeader {
+  padding: 4px;
+  border-bottom: 1px solid black;
+  background-color: lightgray;
+}
+
+.layerContent {
+  padding: 4px;  
 }
 

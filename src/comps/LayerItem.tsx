@@ -7,6 +7,7 @@ import styles from "./LayerItem.module.css";
 import LayerPrecomp from "./lottieLayers/LayerPrecomp";
 import LayerShape from "./lottieLayers/LayerShape";
 import LayerText from "./lottieLayers/LayerText";
+import Toggle from "./ui/Toggle";
 
 type Props = {
   layer: LottieLayer;
@@ -42,21 +43,14 @@ const LayerItem: React.FC<Props> = ({ layer, onClick, enabled = true }) => {
 
   return (
     <div className={joinClasses(styles.root, hidden ? styles.hidden : "")}>
-      <div>
-        <button
-          style={
-            {
-              // backgroundColor: hidden || !enabled ? "lightgray" : "lime",
-            }
-          }
-          onClick={() => onClick && onClick(layer)}
-        >
-          {hidden ? "HIDDEN" : "VISIBLE"}
-        </button>
-
-        <span> [{layerTypeName}] {layer.nm}</span>
+      <div className={styles.layerHeader}>
+        <Toggle checked={!hidden} onChange={() => onClick && onClick(layer)} />
+        <span>
+          {" "}
+          [{layerTypeName}] {layer.nm}
+        </span>
       </div>
-      <div>{contentLayer}</div>
+      <div className={styles.layerContent}>{contentLayer}</div>
     </div>
   );
 };

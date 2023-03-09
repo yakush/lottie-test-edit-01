@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/lottie-test-edit-01/static/css/main.80542280.css",
-    "main.js": "/lottie-test-edit-01/static/js/main.93de6425.js",
+    "main.css": "/lottie-test-edit-01/static/css/main.37c7b01a.css",
+    "main.js": "/lottie-test-edit-01/static/js/main.19654804.js",
     "static/js/787.7e5d6654.chunk.js": "/lottie-test-edit-01/static/js/787.7e5d6654.chunk.js",
     "index.html": "/lottie-test-edit-01/index.html",
-    "main.80542280.css.map": "/lottie-test-edit-01/static/css/main.80542280.css.map",
-    "main.93de6425.js.map": "/lottie-test-edit-01/static/js/main.93de6425.js.map",
+    "main.37c7b01a.css.map": "/lottie-test-edit-01/static/css/main.37c7b01a.css.map",
+    "main.19654804.js.map": "/lottie-test-edit-01/static/js/main.19654804.js.map",
     "787.7e5d6654.chunk.js.map": "/lottie-test-edit-01/static/js/787.7e5d6654.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.80542280.css",
-    "static/js/main.93de6425.js"
+    "static/css/main.37c7b01a.css",
+    "static/js/main.19654804.js"
   ]
 }

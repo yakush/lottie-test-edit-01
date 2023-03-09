@@ -1,5 +1,46 @@
 type predictor = { [key: string]: boolean | (() => boolean) };
 
+export function rgbToHex(
+  r: number,
+  g: number,
+  b: number,
+  a?: number 
+) {
+  let num = (1 << 24) + (r << 16) + (g << 8) + (b << 0);
+
+  if (a != null) {
+    num = (num << 8) + a;
+  }
+
+  return `#${num.toString(16).slice(1)}`;
+}
+
+export function hexToRgb(hex: string) {
+  let result: RegExpExecArray | null = null;
+
+  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result) {
+    return result.map((i) => parseInt(i, 16)).slice(1);
+  }
+
+  result = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
+  if (result) {
+    return result.map((i) => parseInt(i, 16)).slice(1);
+  }
+
+  result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  if (result) {
+    return result.map((i) => parseInt(i, 16)).slice(1);
+  }
+
+  result = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
+  if (result) {
+    return result.map((i) => parseInt(i, 16)).slice(1);
+  }
+
+  return null;
+}
+
 export function joinClasses(...classes: (string | predictor)[]) {
   let resolvedClasses: string[] = [];
 

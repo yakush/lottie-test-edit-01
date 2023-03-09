@@ -6,6 +6,7 @@ import { joinClasses } from "../utils/cssUtils";
 import styles from "./LayerItem.module.css";
 import LayerPrecomp from "./lottieLayers/LayerPrecomp";
 import LayerShape from "./lottieLayers/LayerShape";
+import LayerSolid from "./lottieLayers/LayerSolid";
 import LayerText from "./lottieLayers/LayerText";
 import Toggle from "./ui/Toggle";
 
@@ -35,6 +36,10 @@ const LayerItem: React.FC<Props> = ({ layer, onClick, enabled = true }) => {
 
     case layerTypes.shape:
       contentLayer = <LayerShape layer={layer} enabled={enabled} />;
+      break;
+
+    case layerTypes.solid:
+      contentLayer = <LayerSolid layer={layer} enabled={enabled} />;
       break;
 
     default:

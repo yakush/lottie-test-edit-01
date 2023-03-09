@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { shapeTypes, shapeTypeToName } from "../../enums";
 import { useLottieContext } from "../../LottieContext";
 import { LottieLayer } from "../../types/LottieLayer";
 import { LottieShape } from "../../types/LottieShape";
@@ -19,7 +20,7 @@ const LayerShape: React.FC<Props> = ({ layer, enabled = true }) => {
 
   return (
     <div>
-      <div>{layer.shapes?.length || 0} shapes</div>
+      <div>shapes: {layer.shapes?.length || 0}</div>
       {layer.shapes.map((shape: LottieShape) => (
         <Shape
           key={shape.nm}
@@ -52,7 +53,9 @@ type ShapeProps = {
 
 const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
   //try to find color attr:
-  const color: Color = shape.it?.find(({ ty }) => ty === "fl")?.c;
+  const isGroup = shape.ty === shapeTypes.group;
+
+  const color: Color = shape.c;
 
   const isSimpleColor = color ? color.a === 0 : false;
   const rgba = isSimpleColor ? RGBA(color.k) : RGBA([0, 0, 0, 0]);
@@ -64,6 +67,10 @@ const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
     onChangeColor && onChangeColor();
   }
 
+  if (isGroup) {
+    return <GroupShape shape={shape} onChangeColor={onChangeColor} />;
+  }
+
   return (
     <div
       style={{
@@ -73,32 +80,70 @@ const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
       }}
     >
       <div>
-        name: {shape.nm} | ty: {shape.ty}
+        name: {shape.nm} | type: {shapeTypeToName(shape.ty)} ({shape.ty})
       </div>
       {color && (
         <>
           <div>
-            {isSimpleColor
-              ? `simple color ${JSON.stringify(
-                  color.k.map((x) => Math.round(x * 255))
-                )}`
-              : "animated color"}
+            {isSimpleColor ? (
+              <div>
+                <div
+                  style={{
+                    backgroundColor: rgba,
+                    userSelect: "none",
+                    cursor: "pointer",
+                    border: "solid 2px black",
+                    borderRadius: 5,
+                    padding: "2px 20px",
+                    marginRight: 5,
+                    display: "inline-block",
+                  }}
+                  onClick={(e) => handleColorClick(e)}
+                >
+                  COLOR
+                </div>
+                {JSON.stringify(color.k.map((x) => Math.round(x * 255)))}
+              </div>
+            ) : (
+              <div>animated color</div>
+            )}
           </div>
-          {isSimpleColor && (
-            <div
-              style={{
-                backgroundColor: rgba,
-                userSelect: "none",
-                cursor: "pointer",
-                border: "solid 1px black",
-              }}
-              onClick={(e) => handleColorClick(e)}
-            >
-              COLOR
-            </div>
-          )}
         </>
       )}
+    </div>
+  );
+};
+
+//-------------------------------------------------------
+
+type GroupShapeProps = {
+  shape: LottieShape;
+  children?: React.ReactNode;
+  onChangeColor?: () => void;
+};
+
+const GroupShape: React.FC<GroupShapeProps> = ({ shape, onChangeColor }) => {
+  const items = shape.it;
+
+  return (
+    <div
+      style={{
+        borderBottom: "1px solid black",
+        padding: 3,
+        margin: 3,
+      }}
+    >
+      <div>
+        name: {shape.nm} | type: {shapeTypeToName(shape.ty)} ({shape.ty})
+      </div>
+      <div>items: {items?.length}</div>
+      <ul style={{ marginLeft: 5, borderLeft: "solid 1px gray" }}>
+        {items?.map((item) => (
+          <li>
+            <Shape shape={item} onChangeColor={onChangeColor} />
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

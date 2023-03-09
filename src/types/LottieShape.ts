@@ -1,9 +1,10 @@
+import { shapeTypes } from "../enums";
+
 export type LottieShape = {
-  ty: string; //type
+  ty: shapeTypes; //type
   nm: string; //name
-  it: {
-    ty: string;
-    [key: string]: any;
-  }[];
+  
+  it?: LottieShape[]; //items in group
+  
   [key: string]: any;
 };

@@ -5,7 +5,7 @@
     { "name": "sangoma", "file": "102708-sangoma.json" },
     { "name": "skilltonblack", "file": "111228-skilltonblack.json" },
     { "name": "-- TEST MISSING FILE --", "file": "just-an-error.json" },
-    { "name": "comp1", "file": "comp 1.json" },
+    { "name": "comp1", "file": "comp-1.json" },
     { "name": "test texts", "file": "test-text.json" }
   ]
 }

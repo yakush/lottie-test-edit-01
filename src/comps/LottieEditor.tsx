@@ -45,10 +45,9 @@ const LottieEditor: React.FC<Props> = ({}) => {
 
   return (
     <>
-      <ColorPalette></ColorPalette>
 
       <h3>{layers.length} layers</h3>
-      
+
       <LayersList
         layers={layers}
         onClick={(layer) => handleLayerClick(layer.nm)}

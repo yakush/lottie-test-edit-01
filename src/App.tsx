@@ -1,4 +1,5 @@
 import "./App.css";
+import ColorPalette from "./comps/ColorPalette";
 import LottieEditor from "./comps/LottieEditor";
 import LottieFileSelector from "./comps/LottieFileSelector";
 import LottiePlayer from "./comps/LottiePlayer";
@@ -23,6 +24,10 @@ function App() {
           <div className="editor">
             <div className="editor-selector box">
               <LottieFileSelector />
+            </div>
+
+            <div className=" box">
+              <ColorPalette></ColorPalette>
             </div>
 
             <div className="editor-editor box">

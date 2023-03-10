@@ -1,0 +1,38 @@
+.root {
+  margin: 10px 0;
+  padding: 4px 10px ;
+  transition: margin 50ms ease-in-out;
+  border: 1px solid black;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.553);
+}
+
+.title{
+  font-size: large;
+  font-weight: bold;
+}
+
+.summery{
+  font-size: small;
+}
+
+.swatchGroup {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 5px;
+}
+
+.swatch {
+  border: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.color {
+  border: 2px solid black;
+  border-radius: 4px;
+  margin: 5px;
+  width: 50px;
+  height: 20px;
+  cursor: pointer;
+}

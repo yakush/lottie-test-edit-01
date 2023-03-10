@@ -37,7 +37,7 @@ const LayerPrecomp: React.FC<Props> = ({ layer, enabled = true }) => {
 
       <div style={{ marginLeft: 10 }}>
         <LayersList
-          layers={asset.layers}
+          layers={asset.layers || []}
           onClick={handleLayerClick}
           enabled={enabled && !hidden}
         />

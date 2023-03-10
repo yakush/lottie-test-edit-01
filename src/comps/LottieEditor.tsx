@@ -1,9 +1,7 @@
 import React from "react";
 import { useLottieContext } from "../LottieContext";
-import LayerItem from "./LayerItem";
+import ColorPalette from "./ColorPalette";
 import LayersList from "./LayersList";
-
-import styles from "./LottieEditor.module.css";
 
 type Props = {
   children?: React.ReactNode;
@@ -19,9 +17,9 @@ const LottieEditor: React.FC<Props> = ({}) => {
     lottie.setJson((json) => {
       const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
       console.log(layer);
-      console.log(layer.op);
 
       if (layer) {
+        console.log(layer.op);
         const temp = layer.ty;
         layer.ty = layer.tyOld != null ? layer.tyOld : -100;
         layer.tyOld = temp;
@@ -34,9 +32,9 @@ const LottieEditor: React.FC<Props> = ({}) => {
     lottie.setJson((json) => {
       const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
       console.log(layer);
-      console.log(layer.op);
 
       if (layer) {
+        console.log(layer.op);
         const temp = layer.ty;
         layer.ty = layer.tyOld != null ? layer.tyOld : -100;
         layer.tyOld = temp;
@@ -47,8 +45,10 @@ const LottieEditor: React.FC<Props> = ({}) => {
 
   return (
     <>
-      <h3>{layers.length} layers</h3>
+      <ColorPalette></ColorPalette>
 
+      <h3>{layers.length} layers</h3>
+      
       <LayersList
         layers={layers}
         onClick={(layer) => handleLayerClick(layer.nm)}

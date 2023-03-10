@@ -1,5 +1,8 @@
+import { LottieAsset } from "./LottieAsset";
+import { LottieLayer } from "./LottieLayer";
+
 export interface LottieJson {
-  layers?: any[];
-  assets?: any[];
+  layers?: LottieLayer[];
+  assets?: LottieAsset[];
   [key: string]: any;
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useLottieContext } from "../../LottieContext";
 import { LottieLayer } from "../../types/LottieLayer";
 import TextColor from "./TextColor";
@@ -21,10 +21,16 @@ const LayerText: React.FC<Props> = ({ layer, enabled = true }) => {
 
   const textNode = getLayerTextNode(layer);
 
-  function onUpdate() {
-    if (!textNode?.t) return;
+  function onUpdate(e: FormEvent) {
+    e.preventDefault();
 
-    textNode.t = inputText;
+    if (!textNode?.t) return;
+    let text = inputText;
+    if (text == null ||text === "") {
+      text = " "; 
+    }
+
+    textNode.t = text;
     lottie.setJson((j) => ({ ...j }));
   }
 
@@ -43,15 +49,18 @@ const LayerText: React.FC<Props> = ({ layer, enabled = true }) => {
   return (
     <div>
       <div>
-        <input
-          type="text"
-          value={inputText}
-          onChange={(e) => {
-            setInputText(e.target.value);
-          }}
-        />
-        <button onClick={onUpdate}>update</button>
-        <button onClick={onRevert}>revert</button>
+        <form onSubmit={onUpdate}>
+          <input
+            type="text"
+            value={inputText}
+            onChange={(e) => {
+              setInputText(e.target.value);
+            }}
+          />
+          <input type="submit" value="update" />
+          {/* <button  onClick={onUpdate}>update</button> */}
+          <button onClick={onRevert}>revert</button>
+        </form>
       </div>
       <div>
         <TextColor layer={layer} onclick={handleColorChange} />

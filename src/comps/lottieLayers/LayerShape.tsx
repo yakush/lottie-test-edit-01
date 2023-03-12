@@ -9,6 +9,7 @@ import {
   LottieSimpleColor,
 } from "../../types/LottieShape";
 import ShapeColor from "./ShapeColor";
+import ShapeColorGradient from "./ShapeColorGradient";
 //import styles from "./LayerItem.module.css";
 
 type Props = {
@@ -54,6 +55,7 @@ type ShapeProps = {
 const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
   //try to find color attr:
   const isGroup = shape.ty === shapeTypes.group;
+  const isGradient = shape.ty === (shapeTypes.gfill || shapeTypes.gStroke);
 
   const color: LottieColor = shape.c;
 
@@ -76,7 +78,11 @@ const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
       <div>
         name: {shape.nm} | type: {shapeTypeToName(shape.ty)} ({shape.ty})
       </div>
-      <ShapeColor color={color} onclick={handleColorClick} />
+
+      {color && <ShapeColor color={color} onclick={handleColorClick} />}
+      {/* {isGradient && (
+        <ShapeColorGradient shape={shape} onclick={handleColorClick} />
+      )} */}
     </div>
   );
 };

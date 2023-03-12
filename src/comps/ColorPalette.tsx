@@ -2,13 +2,14 @@ import React from "react";
 import { layerTypes, shapeTypes } from "../enums";
 import { useLottieContext } from "../LottieContext";
 import { LottieJson } from "../types/LottieJson";
-import { LottieLayer } from "../types/LottieLayer";
+import { LottieLayer, SolidLayer } from "../types/LottieLayer";
 import {
   LottieAnimColor,
   LottieColor,
   LottieShape,
   LottieSimpleColor,
 } from "../types/LottieShape";
+import { hexToRgb, rgbToHex } from "../utils/cssUtils";
 
 import styles from "./ColorPalette.module.css";
 
@@ -35,6 +36,15 @@ const ColorPalette: React.FC<Props> = ({}) => {
       }
       if (ref.type === "text") {
         ref.ref.fc = [...newColor];
+      }
+      if (ref.type === "solid") {
+        ref.ref.sc = rgbToHex(
+          256 * newColor[0],
+          256 * newColor[1],
+          256 * newColor[2]
+        );
+        console.log(ref.ref.sc);
+        
       }
     });
     lottie.setJson((s) => ({ ...s }));
@@ -76,7 +86,8 @@ const ColorPalette: React.FC<Props> = ({}) => {
   );
 };
 
-// ---------
+//-------------------------------------------------------
+//-------------------------------------------------------
 type ColorRef =
   | {
       type: "text";
@@ -93,12 +104,18 @@ type ColorRef =
       type: "anim";
       ref: LottieAnimColor;
       animIdx: number;
+    }
+  | {
+      type: "solid";
+      ref: SolidLayer;
     };
 
 type Swatch = {
   color: number[];
   refs: ColorRef[];
 };
+
+//-------------------------------------------------------
 
 function compareColors(a: number[], b: number[]) {
   if (a.length !== b.length) {
@@ -112,6 +129,8 @@ function compareColors(a: number[], b: number[]) {
   }
   return true;
 }
+
+//-------------------------------------------------------
 
 function groupColors(colors: ColorRef[]) {
   const swatches: Swatch[] = [];
@@ -155,10 +174,26 @@ function groupColors(colors: ColorRef[]) {
       }
       swatch.refs.push(color);
     }
+    if (color.type === "solid") {
+      const colorArray = hexToRgb(color.ref.sc)?.map((x) => x / 255);
+      if (colorArray) {
+        let swatch = swatches.find((x) => compareColors(x.color, colorArray));
+        if (!swatch) {
+          swatch = {
+            color: colorArray,
+            refs: [],
+          };
+          swatches.push(swatch);
+        }
+        swatch.refs.push(color);
+      }
+    }
   });
 
   return swatches;
 }
+
+//-------------------------------------------------------
 
 function getLottieColors(json: LottieJson): ColorRef[] {
   const refs: ColorRef[] = [];
@@ -169,6 +204,8 @@ function getLottieColors(json: LottieJson): ColorRef[] {
 
   return refs;
 }
+
+//-------------------------------------------------------
 
 function getLayerColors(json: LottieJson, layer: LottieLayer): ColorRef[] {
   const refs: ColorRef[] = [];
@@ -187,12 +224,31 @@ function getLayerColors(json: LottieJson, layer: LottieLayer): ColorRef[] {
   if (layer.ty === layerTypes.text) {
     refs.push(...getTextLayerColors(layer));
   }
-  // if (layer.ty === layerTypes.solid){
-
-  // }
+  if (layer.ty === layerTypes.solid) {
+    refs.push(...getSolidLayerColors(layer));
+  }
 
   return refs;
 }
+
+//-------------------------------------------------------
+
+function getSolidLayerColors(layer: SolidLayer): ColorRef[] {
+  const refs: ColorRef[] = [];
+
+  const color = layer.sc;
+
+  if (color) {
+    refs.push({
+      type: "solid",
+      ref: layer,
+    });
+  }
+
+  return refs;
+}
+
+//-------------------------------------------------------
 
 function getTextLayerColors(layer: LottieLayer): ColorRef[] {
   const refs: ColorRef[] = [];
@@ -210,6 +266,8 @@ function getTextLayerColors(layer: LottieLayer): ColorRef[] {
   return refs;
 }
 
+//-------------------------------------------------------
+
 function getShapeLayerColors(layer: LottieLayer): ColorRef[] {
   const refs: ColorRef[] = [];
   const shapes: LottieShape[] = layer.shapes || [];
@@ -219,6 +277,8 @@ function getShapeLayerColors(layer: LottieLayer): ColorRef[] {
   });
   return refs;
 }
+
+//-------------------------------------------------------
 
 function getShapeColors(shape: LottieShape): ColorRef[] {
   const refs: ColorRef[] = [];
@@ -239,6 +299,8 @@ function getShapeColors(shape: LottieShape): ColorRef[] {
   return refs;
 }
 
+//-------------------------------------------------------
+
 function wrapColor(color: LottieColor): ColorRef[] {
   if (color.a === 0) {
     return [
@@ -255,6 +317,8 @@ function wrapColor(color: LottieColor): ColorRef[] {
     ref: color,
   }));
 }
+
+//-------------------------------------------------------
 
 function RGBA(arr: number[]) {
   const [r, g, b, a = 1] = arr;

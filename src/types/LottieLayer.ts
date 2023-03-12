@@ -3,3 +3,7 @@ export type LottieLayer = {
   nm: string; //name
   [key: string]: any;
 };
+
+export type SolidLayer = LottieLayer & {
+  sc?: string; //hex string
+};

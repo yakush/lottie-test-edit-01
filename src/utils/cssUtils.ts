@@ -15,8 +15,12 @@ export function rgbToHex(
   return `#${num.toString(16).slice(1)}`;
 }
 
-export function hexToRgb(hex: string) {
+export function hexToRgb(hex?: string) {
   let result: RegExpExecArray | null = null;
+
+  if (!hex){
+    return null;
+  }
 
   result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (result) {

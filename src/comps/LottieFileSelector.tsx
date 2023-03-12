@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import styles from "./LottieFileSelector.module.css";
 import { useDropzone } from "react-dropzone";
 
-import lottieSamplesList from "../assets/lottie-sample-list.json";
+import lottieSamplesList from "../data/jsonsList";
 import { useLottieContext } from "../LottieContext";
 
 type Props = {

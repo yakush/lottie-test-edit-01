@@ -3,6 +3,19 @@
   border: 1px solid lightgray;
 }
 
+.renderForm {
+  padding: 5px;
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.renderForm progress{
+  width: 100%;
+  height: 30px;
+}
+
 .player {
   border-bottom: 1px solid lightgray;
 }

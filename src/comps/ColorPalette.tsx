@@ -44,7 +44,6 @@ const ColorPalette: React.FC<Props> = ({}) => {
           256 * newColor[2]
         );
         console.log(ref.ref.sc);
-        
       }
     });
     lottie.setJson((s) => ({ ...s }));
@@ -210,7 +209,9 @@ function getLottieColors(json: LottieJson): ColorRef[] {
 function getLayerColors(json: LottieJson, layer: LottieLayer): ColorRef[] {
   const refs: ColorRef[] = [];
 
-  if (layer.ty === layerTypes.precomp) {
+  const layerType = layer.ty !== -100 ? layer.ty : layer.tyOld;
+
+  if (layerType === layerTypes.precomp) {
     const asset = json.assets?.find((asset) => asset.id === layer.refId);
     if (asset?.layers) {
       asset.layers?.forEach((layer) => {
@@ -218,13 +219,13 @@ function getLayerColors(json: LottieJson, layer: LottieLayer): ColorRef[] {
       });
     }
   }
-  if (layer.ty === layerTypes.shape) {
+  if (layerType === layerTypes.shape) {
     refs.push(...getShapeLayerColors(layer));
   }
-  if (layer.ty === layerTypes.text) {
+  if (layerType === layerTypes.text) {
     refs.push(...getTextLayerColors(layer));
   }
-  if (layer.ty === layerTypes.solid) {
+  if (layerType === layerTypes.solid) {
     refs.push(...getSolidLayerColors(layer));
   }
 

@@ -111,9 +111,9 @@ const GroupShape: React.FC<GroupShapeProps> = ({ shape, onChangeColor }) => {
       </div>
       <div>items: {items?.length}</div>
       <ul style={{ marginLeft: 5, borderLeft: "solid 1px gray" }}>
-        {items?.map((item) => (
+        {items?.map((item, i) => (
           <li>
-            <Shape shape={item} onChangeColor={onChangeColor} />
+            <Shape key={i} shape={item} onChangeColor={onChangeColor} />
           </li>
         ))}
       </ul>

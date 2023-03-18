@@ -5,10 +5,12 @@
 
 .renderForm {
   padding: 5px;
-  margin: 5px;
   display: flex;
   flex-direction: column;
   gap: 5px;
+  border-bottom: 1px solid lightgray;
+  
+
 }
 
 .renderForm progress{

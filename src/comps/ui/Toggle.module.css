@@ -1,4 +1,13 @@
 /* The switch - the box around the slider */
+.root {
+  display: inline-flex;
+  flex-direction: row;
+  gap:8px;
+}
+
+.label {
+}
+
 .switch {
   position: relative;
   display: inline-block;
@@ -60,3 +69,5 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+
+

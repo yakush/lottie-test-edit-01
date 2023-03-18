@@ -28,56 +28,59 @@ const LottiePlayer: React.FC<Props> = ({}) => {
     console.log("canvas", playerRef?.renderer?.canvasContext?.canvas);
   }, [playerRef]);
 
-  const onFinishRender = useCallback((blob: Blob, data: Uint8Array) => {
-    //save to file:
-    if (saveFileAfterRender) {
-      saveFile()
-        .then(() => console.log("saved"))
-        .catch(console.error);
-    }
-    if (uploadFileAfterRender) {
-      uploadToServer()
-        .then(() => console.log("uploaded"))
-        .catch(console.error);
-    }
-
-    async function saveFile() {
-      const filename = "test.gif";
-      if (window.navigator["msSaveOrOpenBlob"])
-        // IE10+
-        window.navigator["msSaveOrOpenBlob"](blob, filename);
-      else {
-        // Others
-        const a = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        setTimeout(() => {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }, 0);
+  const onFinishRender = useCallback(
+    (blob: Blob, data: Uint8Array) => {
+      //save to file:
+      if (saveFileAfterRender) {
+        saveFile()
+          .then(() => console.log("saved"))
+          .catch(console.error);
       }
-    }
-
-    //upload to server:
-    async function uploadToServer() {
-      const formData = new FormData();
-      formData.append("content", blob, "test.gif");
-
-      try {
-        const response = await fetch("http://localhost:3001/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-        const data = await response.json();
-        console.log(data);
-      } catch (err) {
-        console.error(err);
+      if (uploadFileAfterRender) {
+        uploadToServer()
+          .then(() => console.log("uploaded"))
+          .catch(console.error);
       }
-    }
-  }, [saveFileAfterRender,uploadFileAfterRender]);
+
+      async function saveFile() {
+        const filename = "test.gif";
+        if (window.navigator["msSaveOrOpenBlob"])
+          // IE10+
+          window.navigator["msSaveOrOpenBlob"](blob, filename);
+        else {
+          // Others
+          const a = document.createElement("a");
+          const url = URL.createObjectURL(blob);
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(() => {
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+          }, 0);
+        }
+      }
+
+      //upload to server:
+      async function uploadToServer() {
+        const formData = new FormData();
+        formData.append("content", blob, "test.gif");
+
+        try {
+          const response = await fetch("http://localhost:3001/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          console.log(data);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    },
+    [saveFileAfterRender, uploadFileAfterRender]
+  );
 
   const [setInstance, startRender, isRendering, renderProgress] =
     useGifRenderer(onFinishRender);
@@ -97,17 +100,17 @@ const LottiePlayer: React.FC<Props> = ({}) => {
         </button>
         <div>
           <Toggle
+            label="save file after render"
             checked={saveFileAfterRender}
             onChange={() => setSaveFileAfterRender((x) => !x)}
           />
-          <span>save file after render</span>
         </div>
         <div>
           <Toggle
+            label="upload file to server after render"
             checked={uploadFileAfterRender}
             onChange={() => setUploadFileAfterRender((x) => !x)}
           />
-          <span>upload file to server after render</span>
         </div>
         {/* {isRendering ? "RENDER" : "NOT RENDER"} */}
         {isRendering && (

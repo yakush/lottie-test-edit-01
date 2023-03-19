@@ -8,7 +8,7 @@ type Props = {
 
 const EditsColors: React.FC<Props> = ({}) => {
   const lottie = useLottieContext();
-  const colors = lottie.editsJson?.colors;
+  const colors = lottie.editsJson?.colorEdits;
 
   if (!colors) {
     return <></>;

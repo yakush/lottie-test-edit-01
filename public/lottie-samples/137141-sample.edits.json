@@ -1,41 +1,41 @@
 {
-  "colors": {
+  "colorEdits": {
     "scheme": [
-        {
-            "name": "accent",
-            "description": "this is the accent color. it's nice",
-            "origColorStr": "#f2f2f2ff"
-          },
-          {
-            "name": "primary",
-            "description": "color 1 description",
-            "origColorStr": "#2cad96ff"
-          },
-          {
-            "name": "secondary",
-            "description": "color 2 description",
-            "origColorStr": "#ffffffff"
-          },
-          {
-            "name": "color 3",
-            "description": "color 3 description",
-            "origColorStr": "#808080ff"
-          },
-          {
-            "name": "color 4",
-            "description": "color 4 description",
-            "origColorStr": "#ff7043ff"
-          },
-          {
-            "name": "color 5",
-            "description": "color 5 description",
-            "origColorStr": "#ffdf76ff"
-          },
-          {
-            "name": "color 6",
-            "description": "color 6 description",
-            "origColorStr": "#ffde76ff"
-          }
+      {
+        "name": "accent",
+        "description": "this is the accent color. it's nice",
+        "origColorStr": "#f2f2f2ff"
+      },
+      {
+        "name": "primary",
+        "description": "color 1 description",
+        "origColorStr": "#2cad96ff"
+      },
+      {
+        "name": "secondary",
+        "description": "color 2 description",
+        "origColorStr": "#ffffffff"
+      },
+      {
+        "name": "color 3",
+        "description": "color 3 description",
+        "origColorStr": "#808080ff"
+      },
+      {
+        "name": "color 4",
+        "description": "color 4 description",
+        "origColorStr": "#ff7043ff"
+      },
+      {
+        "name": "color 5",
+        "description": "color 5 description",
+        "origColorStr": "#ffdf76ff"
+      },
+      {
+        "name": "color 6",
+        "description": "color 6 description",
+        "origColorStr": "#ffde76ff"
+      }
     ],
     "options": [
       {
@@ -50,7 +50,7 @@
       }
     ]
   },
-  "layerOptions": [
+  "layerEdits": [
     {
       "name": "group1",
       "description": "group 1 is main char",
@@ -59,12 +59,28 @@
         {
           "name": "option 1",
           "description": "options is 1",
-          "refs": ["layer1", "layer2"]
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 1
+            },
+            {
+              "ind": 1
+            }
+          ]
         },
         {
           "name": "option 2",
           "description": "options is 2",
-          "refs": ["layer11", "layer12"]
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 2
+            },
+            {
+              "ind": 4
+            }
+          ]
         }
       ]
     },
@@ -72,18 +88,72 @@
       "name": "group2",
       "description": "group 2 is another char",
       "defaultOption": 0,
+      "allowNone": true,
       "options": [
         {
           "name": "option 1",
           "description": "options is 1",
-          "refs": ["layer44", "layer42"]
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 1
+            },
+            {
+              "ind": 2
+            }
+          ]
         },
         {
           "name": "option 2",
           "description": "options is 2",
-          "refs": ["layer144", "layer142"]
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 1
+            },
+            {
+              "ind": 1
+            }
+          ]
         }
       ]
+    },
+    {
+      "name": "group3",
+      "description": "group 3 is another char !",
+      "defaultOption": 0,
+      "allowNone": true,
+      "options": [
+        {
+          "name": "option 1",
+          "description": "options is 1",
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 1
+            },
+            {
+              "ind": 2
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "textEdits": [
+    {
+      "name": "text1",
+      "description": "text one is good",
+      "ref": {
+        "ind": 5
+      }
+    },
+    {
+      "name": "text2",
+      "description": "text two is good too",
+      "ref": {
+        "ind": 3
+      }
     }
   ]
 }

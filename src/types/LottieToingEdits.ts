@@ -1,12 +1,19 @@
 type Color = string;
-type LayerRef = string;
 
-export interface LottieToingEdits {
-  colors: ColorsEdits;
-  layerOptions: LayerOption[];
+type LayerRef = {
+  assetId?: string;
+  ind: number;
+};
+
+export interface LottieEditsConfig {
+  colorEdits?: ColorsEditsConfig;
+  layerEdits?: LayerEditsConfig[];
+  textEdits?: TextConfig[];
 }
+
 //-------------------------------------------------------
-export interface ColorsEdits {
+
+export interface ColorsEditsConfig {
   scheme: {
     name: string;
     description: string;
@@ -18,11 +25,15 @@ export interface ColorsEdits {
     colors: Color[];
   }[];
 }
+
 //-------------------------------------------------------
-export interface LayerOption {
+
+export interface LayerEditsConfig {
   name: string;
   description: string;
   defaultOption?: number;
+  allowNone?: boolean;
+
   options: {
     name: string;
     description: string;
@@ -30,12 +41,18 @@ export interface LayerOption {
   }[];
 }
 
+export interface TextConfig {
+  name: string;
+  description: string;
+  ref: LayerRef;
+}
+
 //-------------------------------------------------------
 //-------------------------------------------------------
 //-------------------------------------------------------
 
-let test: LottieToingEdits = {
-  colors: {
+let test: LottieEditsConfig = {
+  colorEdits: {
     scheme: [
       {
         name: "color A",
@@ -61,7 +78,8 @@ let test: LottieToingEdits = {
       },
     ],
   },
-  layerOptions: [
+
+  layerEdits: [
     {
       name: "group1",
       description: "group 1 is main char",
@@ -70,12 +88,28 @@ let test: LottieToingEdits = {
         {
           name: "option 1",
           description: "options is 1",
-          refs: ["layer1", "layer2"],
+          refs: [
+            {
+              assetId: "comp_0",
+              ind: 1,
+            },
+            {
+              ind: 1,
+            },
+          ],
         },
         {
           name: "option 2",
           description: "options is 2",
-          refs: ["layer11", "layer12"],
+          refs: [
+            {
+              assetId: "comp_0",
+              ind: 2,
+            },
+            {
+              ind: 4,
+            },
+          ],
         },
       ],
     },
@@ -83,18 +117,72 @@ let test: LottieToingEdits = {
       name: "group2",
       description: "group 2 is another char",
       defaultOption: 0,
+      allowNone: true,
       options: [
         {
           name: "option 1",
           description: "options is 1",
-          refs: ["layer44", "layer42"],
+          refs: [
+            {
+              assetId: "comp_0",
+              ind: 1,
+            },
+            {
+              ind: 2,
+            },
+          ],
         },
         {
           name: "option 2",
           description: "options is 2",
-          refs: ["layer144", "layer142"],
+          refs: [
+            {
+              assetId: "comp_0",
+              ind: 1,
+            },
+            {
+              ind: 1,
+            },
+          ],
         },
       ],
+    },
+    {
+      name: "group3",
+      description: "group 3 is another char !",
+      defaultOption: 0,
+      allowNone: true,
+      options: [
+        {
+          name: "option 1",
+          description: "options is 1",
+          refs: [
+            {
+              assetId: "comp_0",
+              ind: 1,
+            },
+            {
+              ind: 2,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  textEdits: [
+    {
+      name: "text1",
+      description: "text one is good",
+      ref: {
+        ind: 5,
+      },
+    },
+    {
+      name: "text2",
+      description: "text two is good too",
+      ref: {
+        ind: 3,
+      },
     },
   ],
 };

@@ -38,7 +38,7 @@
   font-size: 10px;
 }
 
-.rawOpener{
+.rawOpener {
   user-select: none;
   cursor: pointer;
 }
@@ -65,7 +65,7 @@
 .player {
   margin: 5px;
   width: 400px;
-  display: flex;  
+  display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
@@ -77,7 +77,8 @@
   display: flex;
   flex-direction: column;
   row-gap: 10px;
-  overflow: hidden;
+  /* overflow: hidden; */
+  overflow-y: scroll;
 }
 
 .editor-selector {
@@ -85,5 +86,4 @@
 
 .editor-editor {
   flex: 1;
-  overflow-y: auto;
 }

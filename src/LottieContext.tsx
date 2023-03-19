@@ -6,18 +6,18 @@ import React, {
   useState,
 } from "react";
 import { LottieJson } from "./types/LottieJson";
-import { LottieToingEdits } from "./types/LottieToingEdits";
+import { LottieEditsConfig } from "./types/LottieToingEdits";
 
 export interface ILottieContext {
   url: string;
   json?: LottieJson;
-  editsJson?: LottieToingEdits;
+  editsJson?: LottieEditsConfig;
   isLoading: boolean;
   error?: unknown;
 
   setJson: React.Dispatch<React.SetStateAction<LottieJson | undefined>>;
   setEditsJson: React.Dispatch<
-    React.SetStateAction<LottieToingEdits | undefined>
+    React.SetStateAction<LottieEditsConfig | undefined>
   >;
 
   loadUrl: (url: string, editsUrl?: string) => Promise<LottieJson>;
@@ -44,7 +44,7 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
   const [json, setJson] = useState<LottieJson>();
-  const [editsJson, setEditsJson] = useState<LottieToingEdits>();
+  const [editsJson, setEditsJson] = useState<LottieEditsConfig>();
 
   useEffect(() => {
     console.log({json});

@@ -9,7 +9,7 @@ import {
   LottieShape,
   LottieSimpleColor,
 } from "../types/LottieShape";
-import { ColorsEdits } from "../types/LottieToingEdits";
+import { ColorsEditsConfig } from "../types/LottieToingEdits";
 import { hexToRgb, rgbToHex } from "../utils/cssUtils";
 
 import styles from "./ColorPalette.module.css";
@@ -51,7 +51,7 @@ const ColorPalette: React.FC<Props> = ({}) => {
   }
 
   function generateSchemeJson() {
-    const colorEdits: ColorsEdits = {
+    const colorEdits: ColorsEditsConfig = {
       scheme: groupedColors.map((color, i) => ({
         name: `color ${i}`,
         description: `color ${i} description`,

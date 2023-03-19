@@ -3,6 +3,7 @@ import { useLottieContext } from "../../LottieContext";
 import styles from "./Edits.module.css";
 import EditsColors from "./EditsColors";
 import EditsLayers from "./EditsLayers";
+import EditsTexts from "./EditsTexts";
 
 type Props = {
   children?: React.ReactNode;
@@ -25,6 +26,7 @@ const Edits: React.FC<Props> = ({}) => {
 
       <EditsColors />
       <EditsLayers />
+      <EditsTexts />
     </div>
   );
 };

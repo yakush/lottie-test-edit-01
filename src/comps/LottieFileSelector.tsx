@@ -39,9 +39,10 @@ const LottieFileSelector: React.FC<Props> = ({}) => {
 
     const item = lottieSamplesList.samples[lottieIdx];
     const url = createUrl(item.file);
+    const urlEdits = item.editsFile && createUrl(item.editsFile);
 
     console.log("change lottie", lottieIdx, item.name);
-    lottie.loadUrl(url);
+    lottie.loadUrl(url, urlEdits);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [lottieIdx]);

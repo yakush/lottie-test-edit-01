@@ -1,5 +1,7 @@
+import { useState } from "react";
 import "./App.css";
 import ColorPalette from "./comps/ColorPalette";
+import Edits from "./comps/edits/Edits";
 import LottieEditor from "./comps/LottieEditor";
 import LottieFileSelector from "./comps/LottieFileSelector";
 import LottiePlayer from "./comps/LottiePlayer";
@@ -7,6 +9,7 @@ import { useLottieContext } from "./LottieContext";
 
 function App() {
   const lottie = useLottieContext();
+  const [isRawOpen, setIsRawOpen] = useState(true);
 
   return (
     <div className="App">
@@ -27,12 +30,23 @@ function App() {
             </div>
 
             <div className=" box">
-              <ColorPalette></ColorPalette>
+              <Edits />
             </div>
 
-            <div className="editor-editor box">
-              {!lottie.isLoading && lottie.json && <LottieEditor />}
+            <div className="rawOpener" onClick={() => setIsRawOpen((s) => !s)}>
+              {isRawOpen ? "+ close raw data" : "- open raw data"}
             </div>
+            {isRawOpen && (
+              <>
+                <div className=" box">
+                  <ColorPalette></ColorPalette>
+                </div>
+
+                <div className="editor-editor box">
+                  {!lottie.isLoading && lottie.json && <LottieEditor />}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </main>

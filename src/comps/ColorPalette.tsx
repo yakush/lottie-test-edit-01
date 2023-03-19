@@ -9,6 +9,7 @@ import {
   LottieShape,
   LottieSimpleColor,
 } from "../types/LottieShape";
+import { ColorsEdits } from "../types/LottieToingEdits";
 import { hexToRgb, rgbToHex } from "../utils/cssUtils";
 
 import styles from "./ColorPalette.module.css";
@@ -49,6 +50,23 @@ const ColorPalette: React.FC<Props> = ({}) => {
     lottie.setJson((s) => ({ ...s }));
   }
 
+  function generateSchemeJson() {
+    const colorEdits: ColorsEdits = {
+      scheme: groupedColors.map((color, i) => ({
+        name: `color ${i}`,
+        description: `color ${i} description`,
+        origColorStr: rgbToHex(
+          color.color[0] * 256,
+          color.color[1] * 256,
+          color.color[2] * 256,
+          color.color[3] * 256
+        ),
+      })),
+    };
+    console.log(JSON.stringify(colorEdits, null, 2));
+    // navigator.clipboard.writeText(JSON.stringify(colorEdits, null, 2));
+  }
+
   return (
     <div className={styles.root}>
       <div className={styles.title}>Color Palette</div>
@@ -81,6 +99,7 @@ const ColorPalette: React.FC<Props> = ({}) => {
       <div className={styles.summery}>
         colors: {colors?.length} unique: {groupedColors?.length}
       </div>
+      <button onClick={generateSchemeJson}>log scheme json...</button>
     </div>
   );
 };

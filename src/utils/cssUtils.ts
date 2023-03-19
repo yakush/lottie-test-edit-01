@@ -1,24 +1,30 @@
 type predictor = { [key: string]: boolean | (() => boolean) };
 
-export function rgbToHex(
-  r: number,
-  g: number,
-  b: number,
-  a?: number 
-) {
+function bounds(num: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, num));
+}
+
+export function rgbToHex(r: number, g: number, b: number, a?: number) {
+  r = r != null ? bounds(r, 0, 255) : r;
+  g = g != null ? bounds(g, 0, 255) : g;
+  b = b != null ? bounds(b, 0, 255) : b;
+  a = a != null ? bounds(a, 0, 255) : a;
+
   let num = (1 << 24) + (r << 16) + (g << 8) + (b << 0);
 
+  let str = `#${num.toString(16).slice(1)}`;
+
   if (a != null) {
-    num = (num << 8) + a;
+    str = str + Math.round(a).toString(16);
   }
 
-  return `#${num.toString(16).slice(1)}`;
+  return str;
 }
 
 export function hexToRgb(hex?: string) {
   let result: RegExpExecArray | null = null;
 
-  if (!hex){
+  if (!hex) {
     return null;
   }
 

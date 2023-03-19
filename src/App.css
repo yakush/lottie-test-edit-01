@@ -38,6 +38,11 @@
   font-size: 10px;
 }
 
+.rawOpener{
+  user-select: none;
+  cursor: pointer;
+}
+
 /* ------------------------------------------------------- */
 
 .box {

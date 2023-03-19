@@ -1,24 +1,38 @@
-import React, { useCallback, useContext, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { LottieJson } from "./types/LottieJson";
+import { LottieToingEdits } from "./types/LottieToingEdits";
 
 export interface ILottieContext {
   url: string;
   json?: LottieJson;
+  editsJson?: LottieToingEdits;
   isLoading: boolean;
   error?: unknown;
 
-  setJson: React.Dispatch<React.SetStateAction<LottieJson>>;
-  loadUrl: (url: string) => Promise<LottieJson>;
-  loadFile: (file: File) => Promise<LottieJson>;
+  setJson: React.Dispatch<React.SetStateAction<LottieJson | undefined>>;
+  setEditsJson: React.Dispatch<
+    React.SetStateAction<LottieToingEdits | undefined>
+  >;
+
+  loadUrl: (url: string, editsUrl?: string) => Promise<LottieJson>;
+  loadFile: (file: File, editsFile?: File) => Promise<LottieJson>;
 }
 const initialState: ILottieContext = {
   url: "",
   json: undefined,
+  editsJson: undefined,
   isLoading: false,
   error: undefined,
   loadUrl: () => Promise.reject<LottieJson>(),
   loadFile: () => Promise.reject<LottieJson>(),
   setJson: () => {},
+  setEditsJson: () => {},
 };
 
 const LottieContext = React.createContext<ILottieContext>(initialState);
@@ -30,21 +44,39 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
   const [json, setJson] = useState<LottieJson>();
+  const [editsJson, setEditsJson] = useState<LottieToingEdits>();
 
-  const loadUrl = useCallback(async (url: string) => {
+  useEffect(() => {
+    console.log({json});
+  }, [json]);
+
+  useEffect(() => {
+    console.log({editsJson});
+  }, [editsJson]);
+
+  const loadUrl = useCallback(async (url: string, urlEdits?: string) => {
     try {
       setUrl(url);
       setIsLoading(true);
       setError(undefined);
       setJson(undefined);
+      setEditsJson(undefined);
 
-      const res = await fetch(url);
-      const json = await res.json();
-      setJson(json);
+      const resJson = await fetch(url);
+      const jsonJson = await resJson.json();
+
+      let jsonEdits = undefined;
+      if (urlEdits) {
+        const resEdits = await fetch(urlEdits);
+        jsonEdits = await resEdits.json();
+      }
+
+      setJson(jsonJson);
+      setEditsJson(jsonEdits);
 
       setIsLoading(false);
       setError(undefined);
-      return json;
+      return jsonJson;
     } catch (e) {
       setUrl(url);
       setIsLoading(false);
@@ -53,12 +85,13 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  const loadFile = useCallback((file: File) => {
+  const loadFile = useCallback((file: File, fileEdits?: File) => {
     return new Promise<LottieJson>((resolve, reject) => {
       setUrl("");
       setIsLoading(true);
       setError(undefined);
       setJson(undefined);
+      setEditsJson(undefined);
 
       const reader = new FileReader();
 
@@ -108,6 +141,8 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
         error,
         json,
         setJson,
+        editsJson,
+        setEditsJson,
         loadUrl,
         loadFile,
       }}

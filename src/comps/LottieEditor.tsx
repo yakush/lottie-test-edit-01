@@ -20,9 +20,7 @@ const LottieEditor: React.FC<Props> = ({}) => {
 
       if (layer) {
         console.log(layer.op);
-        const temp = layer.ty;
-        layer.ty = layer.tyOld != null ? layer.tyOld : -100;
-        layer.tyOld = temp;
+        layer.hd = layer.hd == null ? true : !layer.hd;
       }
       return { ...json };
     });
@@ -35,9 +33,7 @@ const LottieEditor: React.FC<Props> = ({}) => {
 
       if (layer) {
         console.log(layer.op);
-        const temp = layer.ty;
-        layer.ty = layer.tyOld != null ? layer.tyOld : -100;
-        layer.tyOld = temp;
+        layer.hd = layer.hd == null ? true : !layer.hd;
       }
       return { ...json };
     });
@@ -45,7 +41,6 @@ const LottieEditor: React.FC<Props> = ({}) => {
 
   return (
     <>
-
       <h3>{layers.length} layers</h3>
 
       <LayersList

@@ -19,8 +19,10 @@ type Props = {
 };
 
 const LayerItem: React.FC<Props> = ({ layer, onClick, enabled = true }) => {
-  const hidden = layer.ty === -100;
-  const type = !hidden ? layer.ty : layer.tyOld;
+  
+  const hidden = layer.hd === true;
+  const type = layer.ty;
+
   let layerTypeName = layerTypes[type];
 
   let contentLayer: JSX.Element = <></>;

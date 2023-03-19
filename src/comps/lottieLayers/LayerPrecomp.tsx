@@ -14,7 +14,7 @@ const LayerPrecomp: React.FC<Props> = ({ layer, enabled = true }) => {
   //console.log(layer.refId, layer.layers?.length);
   const lottie = useLottieContext();
   const asset = lottie.json?.assets?.find((asset) => asset.id === layer.refId);
-  const hidden = layer.ty === -100;
+  const hidden = layer.hd === true;
 
   if (!asset) {
     return <div>no matching refId {layer.refId}</div>;
@@ -22,9 +22,7 @@ const LayerPrecomp: React.FC<Props> = ({ layer, enabled = true }) => {
 
   function handleLayerClick(layer) {
     if (layer) {
-      const temp = layer.ty;
-      layer.ty = layer.tyOld != null ? layer.tyOld : -100;
-      layer.tyOld = temp;
+      layer.hd = layer.hd == null ? true : !layer.hd;
     }
 
     lottie.setJson((json) => ({ ...json }));

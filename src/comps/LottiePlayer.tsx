@@ -22,7 +22,9 @@ const LottiePlayer: React.FC<Props> = ({}) => {
   const [playerRef, setPlayerRef] = useState<AnimationItem>();
   const [saveFileAfterRender, setSaveFileAfterRender] = useState(true);
   const [uploadFileAfterRender, setUploadFileAfterRender] = useState(false);
+
   const refCurrentTime = useRef(0);
+  const refIsPaused = useRef(false);
 
   useEffect(() => {
     if (playerRef == null) {
@@ -47,10 +49,15 @@ const LottiePlayer: React.FC<Props> = ({}) => {
 
     ref.addEventListener("enterFrame", handler);
 
+    const timer = setInterval(() => {
+      refIsPaused.current = ref.isPaused;
+    }, 100);
+
     return () => {
       try {
         ref.removeEventListener("enterFrame", handler);
       } catch (e) {}
+      clearInterval(timer);
     };
   }, [playerRef]);
 
@@ -58,16 +65,21 @@ const LottiePlayer: React.FC<Props> = ({}) => {
     if (playerRef == null) {
       return;
     }
-
     if (lottie.json == null) {
       return;
     }
 
-    playerRef.goToAndPlay(refCurrentTime.current * playerRef.totalFrames, true);
-    console.log(
-      "playerRef.goToAndPlay(refCurrentTime.current);",
-      refCurrentTime.current
-    );
+    if (refIsPaused.current) {
+      playerRef.goToAndStop(
+        refCurrentTime.current * playerRef.totalFrames,
+        true
+      );
+    } else {
+      playerRef.goToAndPlay(
+        refCurrentTime.current * playerRef.totalFrames,
+        true
+      );
+    }
   }, [playerRef, lottie.json]);
 
   const onFinishRender = useCallback(

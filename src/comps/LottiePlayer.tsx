@@ -1,4 +1,10 @@
-import React, { createRef, useCallback, useEffect, useState } from "react";
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import styles from "./LottiePlayer.module.css";
 import { Controls, Player } from "@lottiefiles/react-lottie-player";
 import { AnimationItem } from "lottie-web";
@@ -16,6 +22,7 @@ const LottiePlayer: React.FC<Props> = ({}) => {
   const [playerRef, setPlayerRef] = useState<AnimationItem>();
   const [saveFileAfterRender, setSaveFileAfterRender] = useState(true);
   const [uploadFileAfterRender, setUploadFileAfterRender] = useState(false);
+  const refCurrentTime = useRef(0);
 
   useEffect(() => {
     if (playerRef == null) {
@@ -27,6 +34,41 @@ const LottiePlayer: React.FC<Props> = ({}) => {
     console.log("svgElement", playerRef?.renderer?.svgElement);
     console.log("canvas", playerRef?.renderer?.canvasContext?.canvas);
   }, [playerRef]);
+
+  useEffect(() => {
+    if (playerRef == null) {
+      return;
+    }
+    const ref = playerRef;
+
+    const handler = (e) => {
+      refCurrentTime.current = e.currentTime / e.totalTime;
+    };
+
+    ref.addEventListener("enterFrame", handler);
+
+    return () => {
+      try {
+        ref.removeEventListener("enterFrame", handler);
+      } catch (e) {}
+    };
+  }, [playerRef]);
+
+  useEffect(() => {
+    if (playerRef == null) {
+      return;
+    }
+
+    if (lottie.json == null) {
+      return;
+    }
+
+    playerRef.goToAndPlay(refCurrentTime.current * playerRef.totalFrames, true);
+    console.log(
+      "playerRef.goToAndPlay(refCurrentTime.current);",
+      refCurrentTime.current
+    );
+  }, [playerRef, lottie.json]);
 
   const onFinishRender = useCallback(
     (blob: Blob, data: Uint8Array) => {
@@ -121,7 +163,10 @@ const LottiePlayer: React.FC<Props> = ({}) => {
         )}
       </div>
       <Player
-        lottieRef={(instance) => setInstance(instance)}
+        lottieRef={(instance) => {
+          setPlayerRef(instance);
+          setInstance(instance);
+        }}
         className={styles.player}
         // lottieRef={ref}
         // renderer="canvas"

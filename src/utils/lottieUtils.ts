@@ -373,7 +373,6 @@ function compareColorsHex(a: string | undefined, b: string | undefined) {
   }
   a = normalizeHexString(a);
   b = normalizeHexString(b);
-  console.log(a, b, a === b);
   return a === b;
 }
 

@@ -186,6 +186,9 @@ export class LottieManager extends EventEmitter {
       text = " ";
     }
 
+    //all breaks should be "\r"
+    text = text.replace(/\r\n/gm, "\r").replace(/\n/gm, "\r");
+    
     layerEdit._edited.selectedText = text;
     this.updateFromEdits();
   }

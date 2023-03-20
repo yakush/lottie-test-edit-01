@@ -69,13 +69,20 @@ const Text: React.FC<PropsText> = ({ layer }) => {
       <label className={styles.layerName} htmlFor={labelId}>
         {layer.name}{" "}
       </label>
-      <input
+      {/* <input
         className={styles.layerText}
         id={labelId}
         type="text"
         value={currentText}
         onChange={handleText}
+      /> */}
+      <textarea
+        className={styles.layerText}
+        id={labelId}
+        onChange={handleText}
+        value={currentText}
       />
+
       <input type="submit" value="update" />
       <input type="reset" value="reset" />
     </form>

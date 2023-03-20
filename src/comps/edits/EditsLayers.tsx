@@ -1,6 +1,6 @@
 import React, { useEffect, useId, useState } from "react";
 import { useLottieContext } from "../../LottieContext";
-import { LayerEditsConfig } from "../../types/LottieToingEdits";
+import { LayerEditsConfig } from "../../types/LottieEditsConfig";
 import styles from "./EditsLayers.module.css";
 
 type Props = {
@@ -69,8 +69,8 @@ const Layer: React.FC<PropsLayer> = ({ layer, onChange }) => {
   };
 
   return (
-    <div>
-      {layer.name} :
+    <div className={styles.layer}>
+      <span className={styles.layerName}>{layer.name} :</span>
       {layer.options.length > 0 && (
         <>
           {layer.allowNone === true && (

@@ -1,5 +1,7 @@
 import React from "react";
 import { useLottieContext } from "../LottieContext";
+import { LottieLayer } from "../types/LottieLayer";
+import { LottieUtils } from "../utils/lottieUtils";
 import ColorPalette from "./ColorPalette";
 import LayersList from "./LayersList";
 
@@ -13,31 +15,21 @@ const LottieEditor: React.FC<Props> = ({}) => {
   const layers = lottie.json?.layers || [];
   const assets = lottie.json?.assets || [];
 
-  function handleLayerClick(name: string) {
-    lottie.setJson((json) => {
-      const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
+  function handleLayerClick(layer: LottieLayer) {
+    if (layer) {
       console.log(layer);
-
-      if (layer) {
-        console.log(layer.op);
-        layer.hd = layer.hd == null ? true : !layer.hd;
-      }
-      return { ...json };
-    });
+      LottieUtils.setLayerHidden(layer, !LottieUtils.isLayerHidden(layer));
+      lottie.setJson((json) => ({ ...json }));
+    }
   }
 
-  function handleAssetLayerClick(name: string) {
-    lottie.setJson((json) => {
-      const layer = lottie.json?.layers?.find((layer) => layer.nm === name);
-      console.log(layer);
-
-      if (layer) {
-        console.log(layer.op);
-        layer.hd = layer.hd == null ? true : !layer.hd;
-      }
-      return { ...json };
-    });
-  }
+  // function handleAssetLayerClick(layer: LottieLayer) {
+  //   if (layer) {
+  //     console.log(layer);
+  //     LottieUtils.setLayerHidden(layer, !LottieUtils.isLayerHidden(layer));
+  //     lottie.setJson((json) => ({ ...json }));
+  //   }
+  // }
 
   return (
     <>
@@ -45,7 +37,7 @@ const LottieEditor: React.FC<Props> = ({}) => {
 
       <LayersList
         layers={layers}
-        onClick={(layer) => handleLayerClick(layer.nm)}
+        onClick={(layer) => handleLayerClick(layer)}
       />
 
       <h3>{assets.length} assets</h3>

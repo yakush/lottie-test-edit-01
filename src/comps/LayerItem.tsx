@@ -3,6 +3,7 @@ import { JsxElement } from "typescript";
 import { layerTypes } from "../enums";
 import { LottieLayer } from "../types/LottieLayer";
 import { joinClasses } from "../utils/cssUtils";
+import { LottieUtils } from "../utils/lottieUtils";
 import styles from "./LayerItem.module.css";
 import LayerPrecomp from "./lottieLayers/LayerPrecomp";
 import LayerShape from "./lottieLayers/LayerShape";
@@ -19,8 +20,7 @@ type Props = {
 };
 
 const LayerItem: React.FC<Props> = ({ layer, onClick, enabled = true }) => {
-  
-  const hidden = layer.hd === true;
+  const hidden = LottieUtils.isLayerHidden(layer);
   const type = layer.ty;
 
   let layerTypeName = layerTypes[type];
@@ -57,7 +57,10 @@ const LayerItem: React.FC<Props> = ({ layer, onClick, enabled = true }) => {
           [{layerTypeName}] {layer.nm}
         </span>
       </div>
-      <div className={styles.layerContent}>{contentLayer}</div>
+      <div className={styles.layerContent}>
+        [ind:{layer.ind}]
+        {contentLayer}
+      </div>
     </div>
   );
 };

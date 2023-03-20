@@ -1,6 +1,9 @@
+import { ColorRef } from "../utils/lottieUtils";
+import { LottieLayer, TextLayer } from "./LottieLayer";
+
 type Color = string;
 
-type LayerRef = {
+export type LayerRef = {
   assetId?: string;
   ind: number;
 };
@@ -18,12 +21,17 @@ export interface ColorsEditsConfig {
     name: string;
     description: string;
     origColorStr: Color;
+    _targets?: ColorRef[];
   }[];
   options?: {
     name: string;
     description: string;
     colors: Color[];
   }[];
+  _edited?: {
+    selectedOption: number; //-1 for user defined
+    userDefinedColors: Color[];
+  };
 }
 
 //-------------------------------------------------------
@@ -38,13 +46,25 @@ export interface LayerEditsConfig {
     name: string;
     description: string;
     refs: LayerRef[];
+    _targets?: LottieLayer[];
   }[];
+
+  _edited?: {
+    selectedOption: number; //-1 for none
+  };
 }
+
+//-------------------------------------------------------
 
 export interface TextConfig {
   name: string;
   description: string;
   ref: LayerRef;
+  _target?: TextLayer;
+
+  _edited?: {
+    selectedText: string;
+  };
 }
 
 //-------------------------------------------------------

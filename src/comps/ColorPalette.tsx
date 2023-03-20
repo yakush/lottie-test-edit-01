@@ -9,7 +9,7 @@ import {
   LottieShape,
   LottieSimpleColor,
 } from "../types/LottieShape";
-import { ColorsEditsConfig } from "../types/LottieToingEdits";
+import { ColorsEditsConfig } from "../types/LottieEditsConfig";
 import { hexToRgb, rgbToHex } from "../utils/cssUtils";
 
 import styles from "./ColorPalette.module.css";
@@ -40,9 +40,9 @@ const ColorPalette: React.FC<Props> = ({}) => {
       }
       if (ref.type === "solid") {
         ref.ref.sc = rgbToHex(
-          256 * newColor[0],
-          256 * newColor[1],
-          256 * newColor[2]
+          255 * newColor[0],
+          255 * newColor[1],
+          255 * newColor[2]
         );
         console.log(ref.ref.sc);
       }
@@ -56,10 +56,10 @@ const ColorPalette: React.FC<Props> = ({}) => {
         name: `color ${i}`,
         description: `color ${i} description`,
         origColorStr: rgbToHex(
-          color.color[0] * 256,
-          color.color[1] * 256,
-          color.color[2] * 256,
-          color.color[3] * 256
+          color.color[0] * 255,
+          color.color[1] * 255,
+          color.color[2] * 255,
+          color.color[3] * 255
         ),
       })),
     };
@@ -228,7 +228,7 @@ function getLottieColors(json: LottieJson): ColorRef[] {
 function getLayerColors(json: LottieJson, layer: LottieLayer): ColorRef[] {
   const refs: ColorRef[] = [];
 
-  const layerType = layer.ty !== -100 ? layer.ty : layer.tyOld;
+  const layerType = layer.ty;
 
   if (layerType === layerTypes.precomp) {
     const asset = json.assets?.find((asset) => asset.id === layer.refId);

@@ -1,6 +1,7 @@
 import React from "react";
 import { useLottieContext } from "../../LottieContext";
 import { LottieLayer } from "../../types/LottieLayer";
+import { LottieUtils } from "../../utils/lottieUtils";
 import LayersList from "../LayersList";
 //import styles from "./LayerItem.module.css";
 
@@ -14,7 +15,7 @@ const LayerPrecomp: React.FC<Props> = ({ layer, enabled = true }) => {
   //console.log(layer.refId, layer.layers?.length);
   const lottie = useLottieContext();
   const asset = lottie.json?.assets?.find((asset) => asset.id === layer.refId);
-  const hidden = layer.hd === true;
+  const hidden = LottieUtils.isLayerHidden(layer);
 
   if (!asset) {
     return <div>no matching refId {layer.refId}</div>;
@@ -22,10 +23,11 @@ const LayerPrecomp: React.FC<Props> = ({ layer, enabled = true }) => {
 
   function handleLayerClick(layer) {
     if (layer) {
-      layer.hd = layer.hd == null ? true : !layer.hd;
+      console.log(layer);
+      LottieUtils.setLayerHidden(layer, !LottieUtils.isLayerHidden(layer));
+      lottie.setJson((json) => ({ ...json }));
     }
 
-    lottie.setJson((json) => ({ ...json }));
   }
 
   return (

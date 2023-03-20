@@ -52,88 +52,70 @@
   },
   "layerEdits": [
     {
-      "name": "group1",
+      "name": "popup shape",
       "description": "group 1 is main char",
       "defaultOption": 0,
       "options": [
         {
-          "name": "option 1",
+          "name": "star",
           "description": "options is 1",
           "refs": [
             {
               "assetId": "comp_0",
-              "ind": 1
-            },
-            {
-              "ind": 1
+              "ind": 3
             }
           ]
         },
         {
-          "name": "option 2",
+          "name": "heart",
           "description": "options is 2",
           "refs": [
             {
               "assetId": "comp_0",
               "ind": 2
-            },
-            {
-              "ind": 4
             }
           ]
         }
       ]
     },
     {
-      "name": "group2",
+      "name": "smoke",
       "description": "group 2 is another char",
       "defaultOption": 0,
       "allowNone": true,
       "options": [
         {
-          "name": "option 1",
-          "description": "options is 1",
+          "name": "show",
+          "description": "show smoke",
           "refs": [
             {
-              "assetId": "comp_0",
               "ind": 1
             },
             {
-              "ind": 2
-            }
-          ]
-        },
-        {
-          "name": "option 2",
-          "description": "options is 2",
-          "refs": [
-            {
-              "assetId": "comp_0",
-              "ind": 1
-            },
-            {
-              "ind": 1
+              "ind": 6
             }
           ]
         }
       ]
     },
     {
-      "name": "group3",
+      "name": "bkg swoosh",
       "description": "group 3 is another char !",
       "defaultOption": 0,
       "allowNone": true,
       "options": [
         {
-          "name": "option 1",
+          "name": "show swoosh!",
           "description": "options is 1",
           "refs": [
             {
-              "assetId": "comp_0",
-              "ind": 1
+              "ind": 5
             },
             {
-              "ind": 2
+              "ind": 4
+            },
+            {
+              "ind": 3
             }
           ]
         }
@@ -152,7 +134,7 @@
       "name": "text2",
       "description": "text two is good too",
       "ref": {
-        "ind": 3
+        "ind": 5
       }
     }
   ]

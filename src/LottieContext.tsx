@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { LottieJson } from "./types/LottieJson";
-import { LottieEditsConfig } from "./types/LottieToingEdits";
+import { LottieEditsConfig } from "./types/LottieEditsConfig";
 
 export interface ILottieContext {
   url: string;

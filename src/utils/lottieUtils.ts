@@ -62,7 +62,7 @@ export class LottieUtils {
   //-------------------------------------------------------
   // color refs
 
-  static setLottieColor( refs: ColorRef[] | undefined, colorHex: string) {
+  static setLottieColor(refs: ColorRef[] | undefined, colorHex?: string) {
     refs?.forEach((ref) => {
       if (ref.type === "simple") {
         ref.ref.k = LottieUtils.hexToRgb(colorHex);
@@ -81,7 +81,7 @@ export class LottieUtils {
 
   static getColorRefs(
     json: LottieJson | undefined,
-    colorHex: string
+    colorHex?: string
   ): ColorRef[] {
     const refs: ColorRef[] = [];
 
@@ -101,7 +101,7 @@ export class LottieUtils {
   static getLayerColorRefs(
     json: LottieJson,
     layer: LottieLayer,
-    colorHex: string
+    colorHex?: string
   ): ColorRef[] {
     const refs: ColorRef[] = [];
 
@@ -132,13 +132,14 @@ export class LottieUtils {
 
   static getSolidLayerColorRefs(
     layer: SolidLayer,
-    colorHex: string
+    colorHex?: string
   ): ColorRef[] {
     const refs: ColorRef[] = [];
 
     const layerColor = layer.sc;
 
-    if (compareColorsHex(layerColor, colorHex)) {
+    const allColors = colorHex == null;
+    if (allColors || LottieUtils.compareColorsHex(layerColor, colorHex)) {
       refs.push({
         type: "solid",
         ref: layer,
@@ -151,7 +152,7 @@ export class LottieUtils {
 
   static getTextLayerColorRefs(
     layer: LottieLayer,
-    colorHex: string
+    colorHex?: string
   ): ColorRef[] {
     const refs: ColorRef[] = [];
 
@@ -159,7 +160,8 @@ export class LottieUtils {
     const layerColorArr: number[] = textNode?.fc; //array
     const layerColor = LottieUtils.rgbToHex(layerColorArr);
 
-    if (compareColorsHex(layerColor, colorHex)) {
+    const allColors = colorHex == null;
+    if (allColors || LottieUtils.compareColorsHex(layerColor, colorHex)) {
       refs.push({
         type: "text",
         ref: textNode,
@@ -171,7 +173,7 @@ export class LottieUtils {
 
   static getShapeLayerColorRefs(
     layer: LottieLayer,
-    colorHex: string
+    colorHex?: string
   ): ColorRef[] {
     const refs: ColorRef[] = [];
     const shapes: LottieShape[] = layer.shapes || [];
@@ -184,7 +186,7 @@ export class LottieUtils {
 
   //-------------------------------------------------------
 
-  static getShapeColorRefs(shape: LottieShape, colorHex: string): ColorRef[] {
+  static getShapeColorRefs(shape: LottieShape, colorHex?: string): ColorRef[] {
     const refs: ColorRef[] = [];
 
     if (shape.ty === shapeTypes.group) {
@@ -204,7 +206,8 @@ export class LottieUtils {
       //simple
       const shapeColorArr = color.k;
       const shapeColorHex = this.rgbToHex(shapeColorArr);
-      if (compareColorsHex(shapeColorHex, colorHex)) {
+      const allColors = colorHex == null;
+      if (allColors || LottieUtils.compareColorsHex(shapeColorHex, colorHex)) {
         refs.push({
           type: "simple",
           ref: color,
@@ -215,7 +218,11 @@ export class LottieUtils {
       color.k.forEach((keyframe, i) => {
         const keyframeColorArr = keyframe.s;
         const keyframeColorHex = this.rgbToHex(keyframeColorArr);
-        if (compareColorsHex(keyframeColorHex, colorHex)) {
+        const allColors = colorHex == null;
+        if (
+          allColors ||
+          LottieUtils.compareColorsHex(keyframeColorHex, colorHex)
+        ) {
           refs.push({
             type: "anim",
             animIdx: i,
@@ -285,60 +292,32 @@ export class LottieUtils {
 
     return result;
   }
-}
 
-//-------------------------------------------------------
-//-------------------------------------------------------
+  static compareColors(a: number[], b: number[]) {
+    return LottieUtils.compareColorsHex(
+      LottieUtils.rgbToHex(a),
+      LottieUtils.rgbToHex(b)
+    );
+  }
 
-function groupColors(colors: ColorRef[]) {
-  const groups: ColorRefGroup[] = [];
-
-  colors.forEach((color) => {
-    if (color.type === "anim") {
-      const colorArray = color.ref.k[color.animIdx].s;
-      let group = groups.find((x) => compareColors(x.color, colorArray));
-      if (!group) {
-        group = {
-          color: colorArray,
-          refs: [],
-        };
-        groups.push(group);
-      }
-      group.refs.push(color);
+  static compareColorsHex(a: string | undefined, b: string | undefined) {
+    if (a == null || b == null) {
+      return false;
     }
+    a = normalizeHexString(a);
+    b = normalizeHexString(b);
+    return a === b;
+  }
 
-    if (color.type === "simple") {
-      const colorArray = color.ref.k;
-      let group = groups.find((x) => compareColors(x.color, colorArray));
-      if (!group) {
-        group = {
-          color: colorArray,
-          refs: [],
-        };
-        groups.push(group);
-      }
-      group.refs.push(color);
-    }
+  static groupColors(colors: ColorRef[]) {
+    const groups: ColorRefGroup[] = [];
 
-    if (color.type === "text") {
-      const colorArray = color.ref.fc;
-      let group = groups.find((x) => compareColors(x.color, colorArray));
-      if (!group) {
-        group = {
-          color: colorArray,
-          refs: [],
-        };
-        groups.push(group);
-      }
-      group.refs.push(color);
-    }
-
-    if (color.type === "solid") {
-      const colorArray = LottieUtils.hexToRgb(color.ref.sc)?.map(
-        (x) => x / 255
-      );
-      if (colorArray) {
-        let group = groups.find((x) => compareColors(x.color, colorArray));
+    colors.forEach((color) => {
+      if (color.type === "anim") {
+        const colorArray = color.ref.k[color.animIdx].s;
+        let group = groups.find((x) =>
+          LottieUtils.compareColors(x.color, colorArray)
+        );
         if (!group) {
           group = {
             color: colorArray,
@@ -348,33 +327,63 @@ function groupColors(colors: ColorRef[]) {
         }
         group.refs.push(color);
       }
-    }
-  });
 
-  return groups;
+      if (color.type === "simple") {
+        const colorArray = color.ref.k;
+        let group = groups.find((x) =>
+          LottieUtils.compareColors(x.color, colorArray)
+        );
+        if (!group) {
+          group = {
+            color: colorArray,
+            refs: [],
+          };
+          groups.push(group);
+        }
+        group.refs.push(color);
+      }
+
+      if (color.type === "text") {
+        const colorArray = color.ref.fc;
+        let group = groups.find((x) =>
+          LottieUtils.compareColors(x.color, colorArray)
+        );
+        if (!group) {
+          group = {
+            color: colorArray,
+            refs: [],
+          };
+          groups.push(group);
+        }
+        group.refs.push(color);
+      }
+
+      if (color.type === "solid") {
+        const colorArray = LottieUtils.hexToRgb(color.ref.sc)?.map(
+          (x) => x / 255
+        );
+        if (colorArray) {
+          let group = groups.find((x) =>
+            LottieUtils.compareColors(x.color, colorArray)
+          );
+          if (!group) {
+            group = {
+              color: colorArray,
+              refs: [],
+            };
+            groups.push(group);
+          }
+          group.refs.push(color);
+        }
+      }
+    });
+
+    return groups;
+  }
 }
 
-function compareColors(a: number[], b: number[]) {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  for (let i = 0; i < a.length; i++) {
-    if (Math.abs(a[i] - b[i]) > 0.00001) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function compareColorsHex(a: string | undefined, b: string | undefined) {
-  if (a == null || b == null) {
-    return false;
-  }
-  a = normalizeHexString(a);
-  b = normalizeHexString(b);
-  return a === b;
-}
+//-------------------------------------------------------
+//-------------------------------------------------------
 
 function normalizeHexString(hex: string) {
   return LottieUtils.rgbToHex(LottieUtils.hexToRgb(hex));

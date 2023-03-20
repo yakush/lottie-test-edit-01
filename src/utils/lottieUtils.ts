@@ -8,7 +8,6 @@ import {
   LottieAnimColor,
   LottieSimpleColor,
 } from "../types/LottieShape";
-import { hexToRgb } from "./cssUtils";
 
 export class LottieUtils {
   static findTarget(lottieJson: LottieJson | undefined, ref: LayerRef) {
@@ -41,6 +40,7 @@ export class LottieUtils {
     if (!layer.t.d.k[0]) return;
     return layer.t.d.k[0].s?.t;
   }
+
   static setLayerText(layer: TextLayer | undefined, text: string) {
     if (!layer?.t?.d?.k) return;
     if (!layer.t.d.k[0]) return;
@@ -66,11 +66,18 @@ export class LottieUtils {
     //refs.forEach()
   }
 
-  static getLottieColors(json: LottieJson): ColorRef[] {
+  static getColorRefs(
+    json: LottieJson | undefined,
+    colorHex: string
+  ): ColorRef[] {
     const refs: ColorRef[] = [];
 
+    if (!json) {
+      return refs;
+    }
+
     json.layers?.forEach((layer) => {
-      refs.push(...LottieUtils.getLayerColors(json, layer));
+      refs.push(...LottieUtils.getLayerColorRefs(json, layer, colorHex));
     });
 
     return refs;
@@ -78,7 +85,11 @@ export class LottieUtils {
 
   //-------------------------------------------------------
 
-  static getLayerColors(json: LottieJson, layer: LottieLayer): ColorRef[] {
+  static getLayerColorRefs(
+    json: LottieJson,
+    layer: LottieLayer,
+    colorHex: string
+  ): ColorRef[] {
     const refs: ColorRef[] = [];
 
     const layerType = layer.ty;
@@ -87,18 +98,18 @@ export class LottieUtils {
       const asset = json.assets?.find((asset) => asset.id === layer.refId);
       if (asset?.layers) {
         asset.layers?.forEach((layer) => {
-          refs.push(...LottieUtils.getLayerColors(json, layer));
+          refs.push(...LottieUtils.getLayerColorRefs(json, layer, colorHex));
         });
       }
     }
-    if (layerType === layerTypes.shape) {
-      refs.push(...LottieUtils.getShapeLayerColors(layer));
+    if (layerType === layerTypes.solid) {
+      refs.push(...LottieUtils.getSolidLayerColorRefs(layer, colorHex));
     }
     if (layerType === layerTypes.text) {
-      refs.push(...LottieUtils.getTextLayerColors(layer));
+      refs.push(...LottieUtils.getTextLayerColorRefs(layer, colorHex));
     }
-    if (layerType === layerTypes.solid) {
-      refs.push(...LottieUtils.getSolidLayerColors(layer));
+    if (layerType === layerTypes.shape) {
+      refs.push(...LottieUtils.getShapeLayerColorRefs(layer, colorHex));
     }
 
     return refs;
@@ -106,30 +117,36 @@ export class LottieUtils {
 
   //-------------------------------------------------------
 
-  static getSolidLayerColors(layer: SolidLayer): ColorRef[] {
+  static getSolidLayerColorRefs(
+    layer: SolidLayer,
+    colorHex: string
+  ): ColorRef[] {
     const refs: ColorRef[] = [];
 
-    const color = layer.sc;
+    const layerColor = layer.sc;
 
-    if (color) {
+    if (compareColorsHex(layerColor, colorHex)) {
       refs.push({
         type: "solid",
         ref: layer,
       });
     }
-
     return refs;
   }
 
   //-------------------------------------------------------
 
-  static getTextLayerColors(layer: LottieLayer): ColorRef[] {
+  static getTextLayerColorRefs(
+    layer: LottieLayer,
+    colorHex: string
+  ): ColorRef[] {
     const refs: ColorRef[] = [];
 
     const textNode = layer?.t?.d?.k[0]?.s;
-    const color = textNode?.fc; //array
+    const layerColorArr: number[] = textNode?.fc; //array
+    const layerColor = LottieUtils.rgbToHex(layerColorArr);
 
-    if (color) {
+    if (compareColorsHex(layerColor, colorHex)) {
       refs.push({
         type: "text",
         ref: textNode,
@@ -139,35 +156,121 @@ export class LottieUtils {
     return refs;
   }
 
-  static getShapeLayerColors(layer: LottieLayer): ColorRef[] {
+  static getShapeLayerColorRefs(
+    layer: LottieLayer,
+    colorHex: string
+  ): ColorRef[] {
     const refs: ColorRef[] = [];
     const shapes: LottieShape[] = layer.shapes || [];
 
     shapes.forEach((shape) => {
-      refs.push(...LottieUtils.getShapeColors(shape));
+      refs.push(...LottieUtils.getShapeColorRefs(shape, colorHex));
     });
     return refs;
   }
 
   //-------------------------------------------------------
 
-  static getShapeColors(shape: LottieShape): ColorRef[] {
+  static getShapeColorRefs(shape: LottieShape, colorHex: string): ColorRef[] {
     const refs: ColorRef[] = [];
 
     if (shape.ty === shapeTypes.group) {
       const items: LottieShape[] = shape.it || [];
       items.forEach((shape) => {
-        refs.push(...LottieUtils.getShapeColors(shape));
+        refs.push(...LottieUtils.getShapeColorRefs(shape, colorHex));
       });
       return refs;
     }
 
     const color: LottieColor = shape.c;
-    if (color) {
-      refs.push(...wrapColor(color));
+    if (!color) {
+      return refs;
+    }
+
+    if (color.a === 0) {
+      //simple
+      const shapeColorArr = color.k;
+      const shapeColorHex = this.rgbToHex(shapeColorArr);
+      if (compareColorsHex(shapeColorHex, colorHex)) {
+        refs.push({
+          type: "simple",
+          ref: color,
+        });
+      }
+    } else {
+      //anim
+      color.k.forEach((keyframe, i) => {
+        const keyframeColorArr = keyframe.s;
+        const keyframeColorHex = this.rgbToHex(keyframeColorArr);
+        if (compareColorsHex(keyframeColorHex, colorHex)) {
+          refs.push({
+            type: "anim",
+            animIdx: i,
+            ref: color,
+          });
+        }
+      });
     }
 
     return refs;
+  }
+
+  static rgbToHex(color: number[]) {
+    if (color.length > 4 || color.length < 3) {
+      console.warn(`rgbToHex() accepted array of ${color.length} elements...`);
+      return "#000000";
+    }
+
+    const r = color[0];
+    const g = color[1];
+    const b = color[2];
+    const a = color[3] ?? 1;
+
+    const r_str = colorComponentToHexPart(r);
+    const g_str = colorComponentToHexPart(g);
+    const b_str = colorComponentToHexPart(b);
+    const a_str = colorComponentToHexPart(a);
+
+    return `#${r_str}${g_str}${b_str}${a_str}`;
+  }
+
+  static hexToRgb(hex?: string) {
+    let parts: RegExpExecArray | null = null;
+    let result = [0, 0, 0, 1];
+
+    if (!hex) {
+      return result;
+    }
+
+    parts = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (parts) {
+      result = parts.slice(1).map((i) => parseInt(i, 16) / 255);
+    }
+
+    parts = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
+    if (parts) {
+      result = parts.slice(1).map((i) => parseInt(i, 16) / 255);
+    }
+
+    parts = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (parts) {
+      result = parts.slice(1).map((i) => parseInt(i, 16) / 255);
+    }
+
+    parts = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(hex);
+    if (parts) {
+      result = parts.slice(1).map((i) => parseInt(i, 16) / 255);
+    }
+
+    result.length = Math.min(4, result.length);
+    if (result.length < 4) {
+      result[0] = result[0] ?? 0;
+      result[1] = result[1] ?? 0;
+      result[2] = result[2] ?? 0;
+      result[3] = result[3] ?? 1;
+    }
+
+    return result;
   }
 }
 
@@ -218,7 +321,9 @@ function groupColors(colors: ColorRef[]) {
     }
 
     if (color.type === "solid") {
-      const colorArray = hexToRgb(color.ref.sc)?.map((x) => x / 255);
+      const colorArray = LottieUtils.hexToRgb(color.ref.sc)?.map(
+        (x) => x / 255
+      );
       if (colorArray) {
         let group = groups.find((x) => compareColors(x.color, colorArray));
         if (!group) {
@@ -249,21 +354,18 @@ function compareColors(a: number[], b: number[]) {
   return true;
 }
 
-function wrapColor(color: LottieColor): ColorRef[] {
-  if (color.a === 0) {
-    return [
-      {
-        type: "simple",
-        ref: color,
-      },
-    ];
+function compareColorsHex(a: string | undefined, b: string | undefined) {
+  if (a == null || b == null) {
+    return false;
   }
+  a = normalizeHexString(a);
+  b = normalizeHexString(b);
+  console.log(a, b, a === b);
+  return a === b;
+}
 
-  return color.k.map((item, i) => ({
-    type: "anim",
-    animIdx: i,
-    ref: color,
-  }));
+function normalizeHexString(hex: string) {
+  return LottieUtils.rgbToHex(LottieUtils.hexToRgb(hex));
 }
 
 export type ColorRefGroup = {
@@ -291,3 +393,13 @@ export type ColorRef =
       type: "solid";
       ref: SolidLayer;
     };
+
+function bounds(num: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, num));
+}
+
+function colorComponentToHexPart(x: number) {
+  x = Math.round(bounds(x * 255, 0, 255));
+  let num = (1 << 8) + x;
+  return num.toString(16).slice(1);
+}

@@ -2,31 +2,26 @@
   "colorEdits": {
     "scheme": [
       {
-        "name": "color 0",
-        "description": "color 0 description",
-        "origColorStr": "#ffffff"
-      },
-      {
         "name": "color 1",
         "description": "color 1 description",
-        "origColorStr": "#ed3124"
+        "origColorStr": "#ee3124"
       },
       {
         "name": "color 2",
         "description": "color 2 description",
-        "origColorStr": "#db3224"
+        "origColorStr": "#dc3224"
       }
     ],
     "options": [
       {
         "name": "palate a",
         "description": "palate a is nice",
-        "colors": ["#ffffff", "#ed3124", "#db3224"]
+        "colors": [ "#ed3124", "#db3224"]
       },
       {
         "name": "palate b",
         "description": "palate a is nice",
-        "colors": ["#aaaaaa", "#aa31ee", "#aa32aa"]
+        "colors": [ "#aa31ee", "#aa32aa"]
       }
     ]
   },

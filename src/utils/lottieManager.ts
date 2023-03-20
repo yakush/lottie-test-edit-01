@@ -162,16 +162,16 @@ export class LottieManager extends EventEmitter {
       return;
     }
     if (!layerEdit._edited) {
-        return;
+      return;
     }
 
     if (text == null) {
-        text = "";
+      text = "";
     }
     if (text === "") {
-        text = " ";
+      text = " ";
     }
-    
+
     layerEdit._edited.selectedText = text;
     this.updateFromEdits();
   }
@@ -194,9 +194,6 @@ export class LottieManager extends EventEmitter {
     this.json = structuredClone(this.origJson);
 
     this.json?.layers?.forEach((layer) => {
-      //save orig layer type
-      layer._orig_ty = layer.ty;
-
       //save orig layer text
       if (layer.ty === layerTypes.text) {
         const layer_ = layer as TextLayer;
@@ -221,7 +218,7 @@ export class LottieManager extends EventEmitter {
     if (this.editConfigs?.colorEdits) {
       //target colors refs
       this.editConfigs.colorEdits.scheme.forEach((item) => {
-        item._targets = [];
+        item._targets = LottieUtils.getColorRefs(this.json, item.origColorStr);
       });
 
       //default edits

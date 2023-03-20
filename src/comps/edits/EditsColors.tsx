@@ -34,8 +34,12 @@ const EditsColors: React.FC<Props> = ({}) => {
             key={i}
             className={styles.color}
             style={{ backgroundColor: item.origColorStr }}
+            onClick={() => {
+              console.log(item._targets);
+            }}
           >
             {item.name}
+            <br /> ({item._targets?.length} refs)
             <span className={styles.tooltiptext}>
               {item.description} <br />
               <br />

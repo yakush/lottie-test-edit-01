@@ -27,14 +27,14 @@
         "origColorStr": "#ff7043ff"
       },
       {
-        "name": "color 5",
-        "description": "color 5 description",
-        "origColorStr": "#ffdf76ff"
-      },
-      {
         "name": "color 6",
         "description": "color 6 description",
         "origColorStr": "#ffde76ff"
+      },
+      {
+        "name": "texts",
+        "description": "text colors",
+        "origColorStr": "#bb90e0"
       }
     ],
     "options": [

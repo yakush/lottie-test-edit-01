@@ -11,7 +11,7 @@ export type LayerRef = {
 export interface LottieEditsConfig {
   colorEdits?: ColorsEditsConfig;
   layerEdits?: LayerEditsConfig[];
-  textEdits?: TextConfig[];
+  textEdits?: TextEditsConfig[];
 }
 
 //-------------------------------------------------------
@@ -56,13 +56,14 @@ export interface LayerEditsConfig {
 
 //-------------------------------------------------------
 
-export interface TextConfig {
+export interface TextEditsConfig {
   name: string;
   description: string;
   ref: LayerRef;
   _target?: TextLayer;
 
   _edited?: {
+    origText: string;
     selectedText: string;
   };
 }

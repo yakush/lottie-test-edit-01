@@ -13,26 +13,6 @@ const EditsLayers: React.FC<Props> = ({}) => {
   const lottie = useLottieContext();
   const layerSelects = lottie.editsJson?.layerEdits;
 
-  const [selectedLayers, setSelectedLayers] = useState(
-    lottie.editsJson?.layerEdits?.map((item) => item.defaultOption ?? 0)
-  );
-
-  useEffect(() => {
-    console.log(JSON.stringify(selectedLayers));
-  }, [selectedLayers]);
-
-  const handleLayerChange = (i_layerOptions: number, i_option: number) => {
-    setSelectedLayers((state) => {
-      if (!state) {
-        return undefined;
-      }
-      let temp = [...state];
-      temp[i_layerOptions] = i_option;
-
-      return temp;
-    });
-  };
-
   if (!layerSelects) {
     return <></>;
   }
@@ -41,11 +21,7 @@ const EditsLayers: React.FC<Props> = ({}) => {
       <div>layer options</div>
 
       {layerSelects.map((layerOptions, i_layerOptions) => (
-        <Layer
-          key={i_layerOptions}
-          layer={layerOptions}
-          onChange={(idx) => handleLayerChange(i_layerOptions, idx)}
-        />
+        <Layer key={i_layerOptions} layer={layerOptions} />
       ))}
     </div>
   );
@@ -56,16 +32,17 @@ const EditsLayers: React.FC<Props> = ({}) => {
 
 type PropsLayer = {
   layer: LayerEditsConfig;
-  onChange?: (selectedIdx: number) => void;
 };
 
-const Layer: React.FC<PropsLayer> = ({ layer, onChange }) => {
+const Layer: React.FC<PropsLayer> = ({ layer }) => {
   const id = useId();
-  const [selectedIdx, setSelectedIdx] = useState(layer.defaultOption ?? 0);
+  // const [selectedIdx, setSelectedIdx] = useState(layer.defaultOption ?? 0);
+  const lottie = useLottieContext();
+  const mgr = lottie.lottieManager;
+  const selectedIdx = layer._edited?.selectedOption ?? 0;
 
   const handleRadio = (i: number) => {
-    setSelectedIdx(i);
-    onChange && onChange(i);
+    mgr?.editLayer(layer.name, i);
   };
 
   return (

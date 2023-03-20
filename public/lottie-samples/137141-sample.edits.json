@@ -124,17 +124,17 @@
   ],
   "textEdits": [
     {
-      "name": "text1",
+      "name": "title 1",
       "description": "text one is good",
       "ref": {
-        "ind": 5
+        "ind": 7
       }
     },
     {
-      "name": "text2",
+      "name": "subtitle",
       "description": "text two is good too",
       "ref": {
-        "ind": 5
+        "ind": 8
       }
     }
   ]

@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { LottieJson } from "./types/LottieJson";
 import { LottieEditsConfig } from "./types/LottieEditsConfig";
-import { LottieManager } from "./utils/lottieManager";
+import { LottieManager, LottieManagerEvents } from "./utils/lottieManager";
 
 export interface ILottieContext {
   lottieManager?: LottieManager;
@@ -65,12 +65,12 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
       setEditsJson(edits);
     };
 
-    mgr.on("changeLottie", handleChangeLottie);
-    mgr.on("changeEdits", handleChangeEdits);
+    mgr.on(LottieManagerEvents.onChangeJson, handleChangeLottie);
+    mgr.on(LottieManagerEvents.onChangeEdits, handleChangeEdits);
 
     return () => {
-      mgr.off("changeLottie", handleChangeLottie);
-      mgr.off("changeEdits", handleChangeEdits);
+      mgr.off(LottieManagerEvents.onChangeJson, handleChangeLottie);
+      mgr.off(LottieManagerEvents.onChangeEdits, handleChangeEdits);
     };
   }, []);
 
@@ -84,7 +84,7 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await lottieManager.current.loadUrl(url, editsUrl);
       setIsLoading(false);
       setError(undefined);
-      setJson(lottieManager.current.editedLottie);
+      setJson(lottieManager.current.json);
       setEditsJson(lottieManager.current.editConfigs);
       return res;
     } catch (err) {
@@ -106,7 +106,7 @@ const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await lottieManager.current.loadFile(file, editsFile);
       setIsLoading(false);
       setError(undefined);
-      setJson(lottieManager.current.editedLottie);
+      setJson(lottieManager.current.json);
       setEditsJson(lottieManager.current.editConfigs);
       return res;
     } catch (err) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useId } from "react";
 import { useLottieContext } from "../../LottieContext";
 import styles from "./EditsColors.module.css";
 
@@ -7,6 +7,7 @@ type Props = {
 };
 
 const EditsColors: React.FC<Props> = ({}) => {
+  const id = useId();
   const lottie = useLottieContext();
   const colors = lottie.editsJson?.colorEdits;
 
@@ -18,7 +19,8 @@ const EditsColors: React.FC<Props> = ({}) => {
     <div className={styles.root}>
       <div>color schemes</div>
       <div>
-        <select>
+        <label htmlFor={`${id}-select`}>select preset: </label>
+        <select id={`${id}-select`}>
           {colors.options?.map((item, i) => (
             <option value={i} key={i}>
               {item.name}

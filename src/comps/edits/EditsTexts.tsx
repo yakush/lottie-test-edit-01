@@ -1,5 +1,6 @@
 import React, { useEffect, useId, useState } from "react";
 import { useLottieContext } from "../../LottieContext";
+import { TextEditsConfig } from "../../types/LottieEditsConfig";
 import styles from "./EditsTexts.module.css";
 
 type Props = {
@@ -10,26 +11,6 @@ const EditsTexts: React.FC<Props> = ({}) => {
   const lottie = useLottieContext();
   const texts = lottie.editsJson?.textEdits;
 
-  const [textEdits, setTextEdits] = useState(
-    texts?.map((layer) => "orig text")
-  );
-
-  useEffect(() => {
-    console.log({ textEdits });
-  }, [textEdits]);
-
-  const handleText = (text: string, i: number) => {
-    setTextEdits((s) => {
-      if (!s) {
-        return s;
-      }
-
-      let temp = { ...s };
-      temp[i] = text;
-      return temp;
-    });
-  };
-
   if (!texts) {
     return <></>;
   }
@@ -38,12 +19,7 @@ const EditsTexts: React.FC<Props> = ({}) => {
       <div>editable texts</div>
 
       {texts.map((textOption, i) => (
-        <Text
-          key={i}
-          name={textOption.name}
-          orig={"orig test !"}
-          onChange={(text) => handleText(text, i)}
-        />
+        <Text key={i} layer={textOption} />
       ))}
     </div>
   );
@@ -53,39 +29,49 @@ const EditsTexts: React.FC<Props> = ({}) => {
 //-------------------------------------------------------
 
 type PropsText = {
-  name: string;
-  orig?: string;
-  onChange?: (text: string) => void;
+  layer: TextEditsConfig;
 };
 
-const Text: React.FC<PropsText> = ({ name, orig = "", onChange }) => {
+const Text: React.FC<PropsText> = ({ layer }) => {
   const labelId = useId();
 
-  const [currentText, setCurrentText] = useState(orig ?? "");
+  const lottie = useLottieContext();
+  const mgr = lottie.lottieManager;
+
+  const selectedText = layer._edited?.selectedText || " ";
+  const origText = layer._edited?.origText || " ";
+
+  const [currentText, setCurrentText] = useState(origText);
 
   const handleText = (e) => {
     e.preventDefault();
     setCurrentText(e.target.value);
   };
-  const handleSubmit = (e) => {
-    console.log("submit");
 
+  const handleSubmit = (e) => {
     e.preventDefault();
-    onChange && onChange(currentText);
+    console.log("submit");
+    mgr?.editText(layer.name, currentText);
   };
 
   const handleReset = (e) => {
-    console.log("reset");
-
     e.preventDefault();
-    setCurrentText(orig);
-    onChange && onChange(orig);
+    console.log("reset");
+    setCurrentText(origText);
+    mgr?.editText(layer.name, origText);
   };
 
   return (
-    <form onSubmit={handleSubmit} onReset={handleReset}>
-      <label htmlFor={labelId}>{name} </label>
+    <form
+      className={styles.layer}
+      onSubmit={handleSubmit}
+      onReset={handleReset}
+    >
+      <label className={styles.layerName} htmlFor={labelId}>
+        {layer.name}{" "}
+      </label>
       <input
+        className={styles.layerText}
         id={labelId}
         type="text"
         value={currentText}

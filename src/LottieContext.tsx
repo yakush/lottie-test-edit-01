@@ -3,34 +3,41 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { LottieJson } from "./types/LottieJson";
 import { LottieEditsConfig } from "./types/LottieEditsConfig";
+import { LottieManager, LottieManagerEvents } from "./utils/lottieManager";
+
+type Setter<T> = (old: T | undefined) => T | undefined;
 
 export interface ILottieContext {
+  lottieManager?: LottieManager;
   url: string;
   json?: LottieJson;
   editsJson?: LottieEditsConfig;
   isLoading: boolean;
   error?: unknown;
-
-  setJson: React.Dispatch<React.SetStateAction<LottieJson | undefined>>;
-  setEditsJson: React.Dispatch<
-    React.SetStateAction<LottieEditsConfig | undefined>
-  >;
-
   loadUrl: (url: string, editsUrl?: string) => Promise<LottieJson>;
   loadFile: (file: File, editsFile?: File) => Promise<LottieJson>;
+
+  setJson: (setter: Setter<LottieJson>) => void;
+
+  setEditsJson: (setter: Setter<LottieEditsConfig>) => void;
 }
 const initialState: ILottieContext = {
+  lottieManager: undefined,
   url: "",
+
   json: undefined,
   editsJson: undefined,
+
   isLoading: false,
   error: undefined,
   loadUrl: () => Promise.reject<LottieJson>(),
   loadFile: () => Promise.reject<LottieJson>(),
+
   setJson: () => {},
   setEditsJson: () => {},
 };
@@ -40,111 +47,113 @@ const LottieContext = React.createContext<ILottieContext>(initialState);
 const LottieContextProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const lottieManager = useRef(new LottieManager());
+
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<unknown>();
+
   const [json, setJson] = useState<LottieJson>();
   const [editsJson, setEditsJson] = useState<LottieEditsConfig>();
 
   useEffect(() => {
-    console.log({json});
+    console.log({ json });
   }, [json]);
 
   useEffect(() => {
-    console.log({editsJson});
+    console.log({ editsJson });
   }, [editsJson]);
 
-  const loadUrl = useCallback(async (url: string, urlEdits?: string) => {
+  useEffect(() => {
+    const mgr = lottieManager.current;
+
+    const handleChangeLottie = (json: LottieJson) => {
+      setJson(json);
+    };
+    const handleChangeEdits = (edits: LottieEditsConfig) => {
+      setEditsJson(edits);
+    };
+
+    mgr.on(LottieManagerEvents.onChangeJson, handleChangeLottie);
+    mgr.on(LottieManagerEvents.onChangeEdits, handleChangeEdits);
+
+    return () => {
+      mgr.off(LottieManagerEvents.onChangeJson, handleChangeLottie);
+      mgr.off(LottieManagerEvents.onChangeEdits, handleChangeEdits);
+    };
+  }, []);
+
+  const setJsonManually = useCallback((setter: Setter<LottieJson>) => {
+    const newVal = setter(lottieManager.current.json);
+    lottieManager.current.setJson(newVal);
+  }, []);
+
+  const setEditsJsonManually = useCallback(
+    (setter: Setter<LottieEditsConfig>) => {
+      const newVal = setter(lottieManager.current.editConfigs);
+      lottieManager.current.setEditsConfig(newVal);
+    },
+    []
+  );
+
+  const loadUrl = async (url: string, editsUrl?: string) => {
     try {
-      setUrl(url);
       setIsLoading(true);
       setError(undefined);
       setJson(undefined);
       setEditsJson(undefined);
 
-      const resJson = await fetch(url);
-      const jsonJson = await resJson.json();
-
-      let jsonEdits = undefined;
-      if (urlEdits) {
-        const resEdits = await fetch(urlEdits);
-        jsonEdits = await resEdits.json();
-      }
-
-      setJson(jsonJson);
-      setEditsJson(jsonEdits);
-
+      const res = await lottieManager.current.loadUrl(url, editsUrl);
       setIsLoading(false);
       setError(undefined);
-      return jsonJson;
-    } catch (e) {
-      setUrl(url);
+      setJson(lottieManager.current.json);
+      setEditsJson(lottieManager.current.editConfigs);
+      return res;
+    } catch (err) {
       setIsLoading(false);
-      setError(e);
-      throw e;
+      setError(err);
+      setJson(undefined);
+      setEditsJson(undefined);
+      throw err;
     }
-  }, []);
+  };
 
-  const loadFile = useCallback((file: File, fileEdits?: File) => {
-    return new Promise<LottieJson>((resolve, reject) => {
-      setUrl("");
+  const loadFile = async (file: File, editsFile?: File) => {
+    try {
       setIsLoading(true);
       setError(undefined);
       setJson(undefined);
       setEditsJson(undefined);
 
-      const reader = new FileReader();
-
-      reader.onabort = () => {
-        console.log("file reading was aborted");
-        setIsLoading(false);
-        setError("file reading was aborted");
-        setJson(undefined);
-        reject("file reading was aborted");
-      };
-
-      reader.onerror = () => {
-        console.log("file reading has failed");
-        setIsLoading(false);
-        setError("file reading has failed");
-        setJson(undefined);
-        reject("file reading has failed");
-      };
-
-      reader.onload = () => {
-        try {
-          const str = reader.result as string;
-          const json = JSON.parse(str);
-          setJson(json);
-          setIsLoading(false);
-          setError(undefined);
-
-          console.log(json);
-          resolve(json);
-        } catch (err) {
-          console.log("JSON parsing failed");
-          setIsLoading(false);
-          setError("JSON parsing failedF");
-          setJson(undefined);
-          reject("JSON parsing failedF");
-        }
-      };
-      reader.readAsText(file);
-    });
-  }, []);
+      const res = await lottieManager.current.loadFile(file, editsFile);
+      setIsLoading(false);
+      setError(undefined);
+      setJson(lottieManager.current.json);
+      setEditsJson(lottieManager.current.editConfigs);
+      return res;
+    } catch (err) {
+      setIsLoading(false);
+      setError(err);
+      setJson(undefined);
+      setEditsJson(undefined);
+      throw err;
+    }
+  };
 
   return (
     <LottieContext.Provider
       value={{
+        lottieManager: lottieManager.current,
         url,
         isLoading,
         error,
         json,
-        setJson,
         editsJson,
-        setEditsJson,
         loadUrl,
         loadFile,
+
+        setJson: setJsonManually,
+        setEditsJson: setEditsJsonManually,
       }}
     >
       {children}

@@ -5,10 +5,15 @@ import { LottieLayer, TextLayer } from "../types/LottieLayer";
 import { LottieEditsConfig } from "../types/LottieEditsConfig";
 import { LottieUtils } from "./lottieUtils";
 
+export enum LottieManagerEvents {
+  onChangeJson = "onChangeJson",
+  onChangeEdits = "onChangeEdits",
+}
+
 export class LottieManager extends EventEmitter {
   private _url: string = "";
-  private _origLottie?: LottieJson;
-  private _editedLottie?: LottieJson;
+  private _origJson?: LottieJson;
+  private _json?: LottieJson;
   private _editConfigs?: LottieEditsConfig;
 
   // GETTERS ? SETTERS ?
@@ -18,31 +23,32 @@ export class LottieManager extends EventEmitter {
   private set url(val) {
     this._url = val;
   }
-  get origLottie() {
-    return this._origLottie;
+  get origJson() {
+    return this._origJson;
   }
-  private set origLottie(val) {
-    this._origLottie = val;
+  private set origJson(val) {
+    this._origJson = val;
   }
-  get editedLottie() {
-    return this._editedLottie;
+  get json() {
+    return this._json;
   }
-  private set editedLottie(val) {
-    this._editedLottie = val;
+  private set json(val) {
+    this._json = val;
+    this.emit(LottieManagerEvents.onChangeJson, this.json);
   }
   get editConfigs() {
     return this._editConfigs;
   }
   private set editConfigs(val) {
     this._editConfigs = val;
+    this.emit(LottieManagerEvents.onChangeEdits, this.editConfigs);
   }
-  
 
   async loadUrl(url: string, urlEdits?: string): Promise<LottieJson> {
     try {
       this.url = url;
-      this.origLottie = undefined;
-      this.editedLottie = undefined;
+      this.origJson = undefined;
+      this.json = undefined;
       this.editConfigs = undefined;
 
       const resLottie = await fetch(url);
@@ -54,8 +60,8 @@ export class LottieManager extends EventEmitter {
         jsonEdits = await resEdits.json();
       }
 
-      this.origLottie = lottieJson;
-      this.editedLottie = { ...lottieJson };
+      this.origJson = lottieJson;
+      this.json = { ...lottieJson };
       this.editConfigs = jsonEdits;
 
       this.digestLottie();
@@ -69,24 +75,24 @@ export class LottieManager extends EventEmitter {
   async loadFile(file: File, editsFile?: File): Promise<LottieJson> {
     return new Promise<LottieJson>((resolve, reject) => {
       this.url = "";
-      this.origLottie = undefined;
-      this.editedLottie = undefined;
+      this.origJson = undefined;
+      this.json = undefined;
       this.editConfigs = undefined;
 
       const reader = new FileReader();
 
       reader.onabort = () => {
         console.log("file reading was aborted");
-        this.origLottie = undefined;
-        this.editedLottie = undefined;
+        this.origJson = undefined;
+        this.json = undefined;
         this.editConfigs = undefined;
         reject("file reading was aborted");
       };
 
       reader.onerror = () => {
         console.log("file reading has failed");
-        this.origLottie = undefined;
-        this.editedLottie = undefined;
+        this.origJson = undefined;
+        this.json = undefined;
         this.editConfigs = undefined;
         reject("file reading has failed");
       };
@@ -96,8 +102,8 @@ export class LottieManager extends EventEmitter {
           const str = reader.result as string;
           const json = JSON.parse(str);
 
-          this.origLottie = json;
-          this.editedLottie = { ...json };
+          this.origJson = json;
+          this.json = { ...json };
           this.editConfigs = undefined;
 
           this.digestLottie();
@@ -106,8 +112,8 @@ export class LottieManager extends EventEmitter {
           resolve(json);
         } catch (err) {
           console.log("JSON parsing failed");
-          this.origLottie = undefined;
-          this.editedLottie = undefined;
+          this.origJson = undefined;
+          this.json = undefined;
           this.editConfigs = undefined;
           reject("JSON parsing failedF");
         }
@@ -116,8 +122,13 @@ export class LottieManager extends EventEmitter {
     });
   }
 
-  setLottieJson(json?: LottieJson) {}
-  setEditsConfig(edits?: LottieEditsConfig) {}
+  //TODO: remove these manual setters?
+  setJson(json?: LottieJson) {
+    this.json = json;
+  }
+  setEditsConfig(edits?: LottieEditsConfig) {
+    this.editConfigs = edits;
+  }
 
   editColors(option: number, userDefinedColors?: string[]) {
     if (!this.editConfigs?.colorEdits?._edited) {
@@ -150,9 +161,18 @@ export class LottieManager extends EventEmitter {
     if (!layerEdit) {
       return;
     }
-    if (layerEdit._edited) {
-      layerEdit._edited.selectedText = text;
+    if (!layerEdit._edited) {
+        return;
     }
+
+    if (text == null) {
+        text = "";
+    }
+    if (text === "") {
+        text = " ";
+    }
+    
+    layerEdit._edited.selectedText = text;
     this.updateFromEdits();
   }
 
@@ -165,15 +185,15 @@ export class LottieManager extends EventEmitter {
    * @returns
    */
   private digestLottie() {
-    if (!this.origLottie) {
-      this.editedLottie = undefined;
+    if (!this.origJson) {
+      this.json = undefined;
       return;
     }
 
     //deep copy lottie
-    this.editedLottie = structuredClone(this.origLottie);
+    this.json = structuredClone(this.origJson);
 
-    this.editedLottie?.layers?.forEach((layer) => {
+    this.json?.layers?.forEach((layer) => {
       //save orig layer type
       layer._orig_ty = layer.ty;
 
@@ -220,10 +240,7 @@ export class LottieManager extends EventEmitter {
       this.editConfigs.layerEdits.forEach((item) => {
         //target refs
         item.options.forEach((option) => {
-          option._targets = LottieUtils.findTargetArray(
-            this.editedLottie,
-            option.refs
-          );
+          option._targets = LottieUtils.findTargetArray(this.json, option.refs);
         });
         //default edits
         item._edited = {
@@ -235,10 +252,13 @@ export class LottieManager extends EventEmitter {
     if (this.editConfigs?.textEdits) {
       this.editConfigs.textEdits.forEach((item) => {
         //target refs
-        item._target = LottieUtils.findTarget(this.editedLottie, item.ref);
+        item._target = LottieUtils.findTarget(this.json, item.ref);
         //default edits
+        const origText =
+          LottieUtils.getLayerText(item._target as TextLayer) || "";
         item._edited = {
-          selectedText: "orig text", //TODO: get from layer in lottie json
+          origText: origText,
+          selectedText: origText,
         };
       });
     }
@@ -248,7 +268,7 @@ export class LottieManager extends EventEmitter {
   }
 
   private updateFromEdits() {
-    if (!this.editedLottie) {
+    if (!this.json) {
       return;
     }
     if (!this.editConfigs) {
@@ -265,6 +285,7 @@ export class LottieManager extends EventEmitter {
         layerEdit.options.forEach((option, i) => {
           const hidden = i !== selectedIdx;
           option._targets?.forEach((target) => {
+            console.log("set layer hidden:", option.name, hidden);
             LottieUtils.setLayerHidden(target, hidden);
           });
         });
@@ -284,6 +305,7 @@ export class LottieManager extends EventEmitter {
       });
     }
 
+    this.json = { ...this.json };
     //TODO: notify changed json
   }
 }

@@ -46,7 +46,7 @@ class GifRenderer extends EventEmitter {
       width,
       height,
       //workers: 2,
-      quality: 10,
+      quality: 3,
       background: "#fff",
     });
     this.animationItem = animationItem;

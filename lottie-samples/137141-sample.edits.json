@@ -1,0 +1,157 @@
+{
+  "colorEdits": {
+    "scheme": [
+      {
+        "name": "accent",
+        "description": "this is the accent color. it's nice",
+        "origColorStr": "#f2f2f2ff"
+      },
+      {
+        "name": "primary",
+        "description": "color 1 description",
+        "origColorStr": "#2cad96ff"
+      },
+      {
+        "name": "secondary",
+        "description": "color 2 description",
+        "origColorStr": "#ffffffff"
+      },
+      {
+        "name": "color 3",
+        "description": "color 3 description",
+        "origColorStr": "#808080ff"
+      },
+      {
+        "name": "color 4",
+        "description": "color 4 description",
+        "origColorStr": "#ff7043ff"
+      },
+      {
+        "name": "color 6",
+        "description": "color 6 description",
+        "origColorStr": "#ffde76ff"
+      },
+      {
+        "name": "texts",
+        "description": "text colors",
+        "origColorStr": "#bb90e0"
+      }
+    ],
+    "options": [
+      {
+        "name": "palate a",
+        "description": "palate a is nice",
+        "colors": [
+          "#f2f2f2ff",
+          "#2cad96ff",
+          "#ffffffff",
+          "#808080ff",
+          "#ff7043ff",
+          "#ffde76ff",
+          "#bb90e0"
+        ]
+      },
+      {
+        "name": "palate b",
+        "description": "palate a is nice",
+        "colors": [
+          "#ff8080ff",
+          "#2cad96ff",
+          "#ffde76ff",
+          "#bb00e0ff",
+          "#ff1143ff",
+          "#ff11ffff",
+          "#f2f200ff"
+        ]
+      }
+    ]
+  },
+  "layerEdits": [
+    {
+      "name": "popup shape",
+      "description": "group 1 is main char",
+      "defaultOption": 0,
+      "options": [
+        {
+          "name": "star",
+          "description": "options is 1",
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 3
+            }
+          ]
+        },
+        {
+          "name": "heart",
+          "description": "options is 2",
+          "refs": [
+            {
+              "assetId": "comp_0",
+              "ind": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "smoke",
+      "description": "group 2 is another char",
+      "defaultOption": 0,
+      "allowNone": true,
+      "options": [
+        {
+          "name": "show",
+          "description": "show smoke",
+          "refs": [
+            {
+              "ind": 1
+            },
+            {
+              "ind": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "bkg swoosh",
+      "description": "group 3 is another char !",
+      "defaultOption": 0,
+      "allowNone": true,
+      "options": [
+        {
+          "name": "show swoosh!",
+          "description": "options is 1",
+          "refs": [
+            {
+              "ind": 5
+            },
+            {
+              "ind": 4
+            },
+            {
+              "ind": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "textEdits": [
+    {
+      "name": "title 1",
+      "description": "text one is good",
+      "ref": {
+        "ind": 7
+      }
+    },
+    {
+      "name": "subtitle",
+      "description": "text two is good too",
+      "ref": {
+        "ind": 8
+      }
+    }
+  ]
+}

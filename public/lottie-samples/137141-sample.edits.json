@@ -41,12 +41,28 @@
       {
         "name": "palate a",
         "description": "palate a is nice",
-        "colors": ["#aaaaaa", "#bbbbbb"]
+        "colors": [
+          "#f2f2f2ff",
+          "#2cad96ff",
+          "#ffffffff",
+          "#808080ff",
+          "#ff7043ff",
+          "#ffde76ff",
+          "#bb90e0"
+        ]
       },
       {
         "name": "palate b",
         "description": "palate a is nice",
-        "colors": ["#a0a0a0", "#b0b0b0"]
+        "colors": [
+          "#ff8080ff",
+          "#2cad96ff",
+          "#ffde76ff",
+          "#bb00e0ff",
+          "#ff1143ff",
+          "#ff11ffff",
+          "#f2f200ff"
+        ]
       }
     ]
   },

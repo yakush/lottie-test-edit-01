@@ -10,7 +10,12 @@ type Props = {
 const EditsColors: React.FC<Props> = ({}) => {
   const id = useId();
   const lottie = useLottieContext();
+  const mgr = lottie.lottieManager;
   const colors = lottie.editsJson?.colorEdits;
+
+  const handleSelectPalette = (i: number) => {
+    mgr?.editColors(i);
+  };
 
   if (!colors) {
     return <></>;
@@ -20,7 +25,10 @@ const EditsColors: React.FC<Props> = ({}) => {
     <EditCard title="color schemes">
       <div>
         <label htmlFor={`${id}-select`}>select preset: </label>
-        <select id={`${id}-select`}>
+        <select
+          id={`${id}-select`}
+          onChange={(e) => handleSelectPalette(+e.target.value)}
+        >
           {colors.options?.map((item, i) => (
             <option value={i} key={i}>
               {item.name}
@@ -33,7 +41,7 @@ const EditsColors: React.FC<Props> = ({}) => {
           <div
             key={i}
             className={styles.color}
-            style={{ backgroundColor: item.origColorStr }}
+            style={{ backgroundColor: item._currentColorStr ?? item.origColorStr }}
             onClick={() => {
               console.log(item._targets);
             }}

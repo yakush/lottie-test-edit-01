@@ -22,6 +22,7 @@ export interface ColorsEditsConfig {
     description: string;
     origColorStr: Color;
     _targets?: ColorRef[];
+    _currentColorStr?: string;
   }[];
   options?: {
     name: string;

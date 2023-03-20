@@ -62,8 +62,21 @@ export class LottieUtils {
   //-------------------------------------------------------
   // color refs
 
-  static setLottieColor(json: LottieJson, refs: ColorRef[], colorHex: string) {
-    //refs.forEach()
+  static setLottieColor( refs: ColorRef[] | undefined, colorHex: string) {
+    refs?.forEach((ref) => {
+      if (ref.type === "simple") {
+        ref.ref.k = LottieUtils.hexToRgb(colorHex);
+      }
+      if (ref.type === "anim") {
+        ref.ref.k[ref.animIdx].s = LottieUtils.hexToRgb(colorHex);
+      }
+      if (ref.type === "text") {
+        ref.ref.fc = LottieUtils.hexToRgb(colorHex);
+      }
+      if (ref.type === "solid") {
+        ref.ref.sc = colorHex;
+      }
+    });
   }
 
   static getColorRefs(

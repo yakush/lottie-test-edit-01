@@ -130,14 +130,28 @@ export class LottieManager extends EventEmitter {
     this.editConfigs = edits;
   }
 
-  editColors(option: number, userDefinedColors?: string[]) {
+  editColors(optionIdx: number, userDefinedColors?: string[]) {
     if (!this.editConfigs?.colorEdits?._edited) {
       return;
     }
-    this.editConfigs.colorEdits._edited.selectedOption = option;
+    this.editConfigs.colorEdits._edited.selectedOption = optionIdx;
+
     if (userDefinedColors) {
       this.editConfigs.colorEdits._edited.userDefinedColors = userDefinedColors;
     }
+
+    if (!this.editConfigs.colorEdits.options) {
+      return;
+    }
+
+    const option = this.editConfigs.colorEdits.options[optionIdx];
+    this.editConfigs.colorEdits.scheme.forEach((item, i) => {
+      const newColor = option.colors[i];
+      if (newColor) {
+        item._currentColorStr = newColor;
+        LottieUtils.setLottieColor(item._targets, newColor);
+      }
+    });
     this.updateFromEdits();
   }
 
@@ -219,6 +233,7 @@ export class LottieManager extends EventEmitter {
       //target colors refs
       this.editConfigs.colorEdits.scheme.forEach((item) => {
         item._targets = LottieUtils.getColorRefs(this.json, item.origColorStr);
+        item._currentColorStr = item.origColorStr;
       });
 
       //default edits

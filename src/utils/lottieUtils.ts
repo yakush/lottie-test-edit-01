@@ -36,23 +36,26 @@ export class LottieUtils {
     return list;
   }
 
-  static getLayerText(layer: TextLayer) {
-    if (!layer.t?.d?.k) return;
+  static getLayerText(layer: TextLayer | undefined) {
+    if (!layer?.t?.d?.k) return;
     if (!layer.t.d.k[0]) return;
     return layer.t.d.k[0].s?.t;
   }
-  static setLayerText(layer: TextLayer, text: string) {
-    if (!layer.t?.d?.k) return;
+  static setLayerText(layer: TextLayer | undefined, text: string) {
+    if (!layer?.t?.d?.k) return;
     if (!layer.t.d.k[0]) return;
     if (!layer.t.d.k[0].s?.t) return;
     layer.t.d.k[0].s.t = text;
   }
 
-  static isLayerHidden(layer: LottieLayer) {
-    return layer.hd == null ? false : layer.hd;
+  static isLayerHidden(layer: LottieLayer | undefined) {
+    return layer?.hd == null ? false : layer.hd;
   }
 
-  static setLayerHidden(layer: LottieLayer, hidden: boolean) {
+  static setLayerHidden(layer: LottieLayer | undefined, hidden: boolean) {
+    if (!layer) {
+      return;
+    }
     layer.hd = hidden;
   }
 

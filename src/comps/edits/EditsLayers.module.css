@@ -1,9 +1,5 @@
 .root {
-  margin: 10px 0;
-  padding: 4px 10px;
-  transition: margin 50ms ease-in-out;
-  border: 1px solid black;
-  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.553);
+
 }
 
 .layer {

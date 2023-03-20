@@ -5,16 +5,16 @@ function bounds(num: number, min: number, max: number) {
 }
 
 export function rgbToHex(r: number, g: number, b: number, a?: number) {
-  r = r != null ? bounds(r, 0, 255) : r;
-  g = g != null ? bounds(g, 0, 255) : g;
-  b = b != null ? bounds(b, 0, 255) : b;
-  a = a != null ? bounds(a, 0, 255) : a;
+  r = r != null && !isNaN(r) ? bounds(r, 0, 255) : r;
+  g = g != null && !isNaN(g) ? bounds(g, 0, 255) : g;
+  b = b != null && !isNaN(b) ? bounds(b, 0, 255) : b;
+  a = a != null && !isNaN(a) ? bounds(a, 0, 255) : a;
 
   let num = (1 << 24) + (r << 16) + (g << 8) + (b << 0);
 
   let str = `#${num.toString(16).slice(1)}`;
 
-  if (a != null) {
+  if (a != null && !isNaN(a)) {
     str = str + Math.round(a).toString(16);
   }
 

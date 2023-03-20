@@ -5,7 +5,11 @@ const jsonList = {
       file: "137141-sample.json",
       editsFile: "137141-sample.edits.json",
     },
-    { name: "car", file: "138116-sample-again.json" },
+    {
+      name: "car",
+      file: "138116-sample-again.json",
+      editsFile: "138116-sample-again.edits.json",
+    },
     { name: "star system", file: "102708-sangoma.json" },
     { name: "animated logo", file: "111228-skilltonblack.json" },
     { name: "AE TEST: texts", file: "test-text.json" },

@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useState } from "react";
 import { useLottieContext } from "../../LottieContext";
 import { LayerEditsConfig } from "../../types/LottieEditsConfig";
+import EditCard from "./EditCard";
 import styles from "./EditsLayers.module.css";
 
 type Props = {
@@ -17,13 +18,11 @@ const EditsLayers: React.FC<Props> = ({}) => {
     return <></>;
   }
   return (
-    <div className={styles.root}>
-      <div>layer options</div>
-
+    <EditCard title="layer options">
       {layerSelects.map((layerOptions, i_layerOptions) => (
         <Layer key={i_layerOptions} layer={layerOptions} />
       ))}
-    </div>
+    </EditCard>
   );
 };
 

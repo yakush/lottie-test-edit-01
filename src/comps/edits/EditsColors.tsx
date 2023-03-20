@@ -1,5 +1,6 @@
 import React, { useId } from "react";
 import { useLottieContext } from "../../LottieContext";
+import EditCard from "./EditCard";
 import styles from "./EditsColors.module.css";
 
 type Props = {
@@ -16,8 +17,7 @@ const EditsColors: React.FC<Props> = ({}) => {
   }
 
   return (
-    <div className={styles.root}>
-      <div>color schemes</div>
+    <EditCard title="color schemes">
       <div>
         <label htmlFor={`${id}-select`}>select preset: </label>
         <select id={`${id}-select`}>
@@ -44,7 +44,7 @@ const EditsColors: React.FC<Props> = ({}) => {
           </div>
         ))}
       </div>
-    </div>
+    </EditCard>
   );
 };
 

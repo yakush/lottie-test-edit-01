@@ -1,6 +1,7 @@
 import React, { useEffect, useId, useState } from "react";
 import { useLottieContext } from "../../LottieContext";
 import { TextEditsConfig } from "../../types/LottieEditsConfig";
+import EditCard from "./EditCard";
 import styles from "./EditsTexts.module.css";
 
 type Props = {
@@ -15,13 +16,11 @@ const EditsTexts: React.FC<Props> = ({}) => {
     return <></>;
   }
   return (
-    <div className={styles.root}>
-      <div>editable texts</div>
-
+    <EditCard title="editable texts">
       {texts.map((textOption, i) => (
         <Text key={i} layer={textOption} />
       ))}
-    </div>
+    </EditCard>
   );
 };
 

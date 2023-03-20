@@ -297,7 +297,6 @@ export class LottieManager extends EventEmitter {
         layerEdit.options.forEach((option, i) => {
           const hidden = i !== selectedIdx;
           option._targets?.forEach((target) => {
-            console.log("set layer hidden:", option.name, hidden);
             LottieUtils.setLayerHidden(target, hidden);
           });
         });

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { LottieShape } from "../../types/LottieShape";
+import { LottieShape, LottieSimpleColor } from "../../types/LottieShape";
 import ShapeColor from "./ShapeColor";
 
 type Props = {
@@ -15,7 +15,7 @@ const ShapeColorGradient: React.FC<Props> = ({ shape, onclick }) => {
   const keys = keysData?.k;
   const anim = keysData?.a === 1;
 
-  function handleColorClick(e) {
+  function handleColorClick(e,idx:number) {
     e.preventDefault();
     e.stopPropagation();
     // color.k = [Math.random(), Math.random(), Math.random(), 1];
@@ -28,32 +28,16 @@ const ShapeColorGradient: React.FC<Props> = ({ shape, onclick }) => {
   console.log(keys);
 
   if (anim) {
-    let simpleColorRefs: any[] = [];
-    for (let i = 0; i < keys.length; i += 3) {
-      const color = [keys[i + 0], keys[i + 1], keys[i + 2]];
-      simpleColorRefs.push({
-        a: 0,
-        ix: keys.ix,
-        k: color,
-      });
-    }
-
     return (
       <div>
-        gradient colors (anim)
-        <div>
-          {keys.map((item, i) => {
-            console.log({ keys });
-            return <div key={i}>color {i}</div>;
-          })}
-        </div>
+        <div>animated color</div>
       </div>
     );
   }
 
   let colorRefs: any[] = [];
-  for (let i = 0; i < keys.length; i += 3) {
-    const color = [keys[i + 0], keys[i + 1], keys[i + 2]];
+  for (let i = 0; i < keys.length / 4; i++) {
+    const color = [keys[i * 4 + 1], keys[i * 4 + 2], keys[i * 4 + 3]];
     colorRefs.push({
       a: 0,
       ix: 4,

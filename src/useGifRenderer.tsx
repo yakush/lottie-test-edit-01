@@ -14,24 +14,6 @@ function useGifRenderer(
   const [isRendering, setIsRendering] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  useEffect(() => {
-    if (instance == null) {
-      return;
-    }
-    console.log("currentFrame :", instance.currentFrame);
-    console.log("totalFrames :", instance.totalFrames);
-    console.log("frameRate :", instance.frameRate);
-
-    console.log(instance?.renderer);
-    console.log("svgElement", instance?.renderer?.svgElement);
-    console.log("canvas", instance?.renderer?.canvasContext?.canvas);
-
-    const node = instance?.renderer?.svgElement as SVGElement;
-
-    console.log("width:", +(node?.getAttribute("width") || 100));
-    console.log("height:", +(node?.getAttribute("height") || 100));
-  }, [instance]);
-
   const startRender = useCallback(() => {
     console.log("render!");
 
@@ -70,7 +52,7 @@ function useGifRenderer(
     });
     gif.on("finished", (blob, data) => {
       setIsRendering(false);
-      
+
       onFinish && onFinish(blob, data);
     });
 

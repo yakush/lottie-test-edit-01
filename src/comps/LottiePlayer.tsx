@@ -30,17 +30,6 @@ const LottiePlayer: React.FC<Props> = ({}) => {
     if (playerRef == null) {
       return;
     }
-    console.log("currentFrame :", playerRef.currentFrame);
-    console.log("totalFrames :", playerRef.totalFrames);
-    console.log(playerRef?.renderer);
-    console.log("svgElement", playerRef?.renderer?.svgElement);
-    console.log("canvas", playerRef?.renderer?.canvasContext?.canvas);
-  }, [playerRef]);
-
-  useEffect(() => {
-    if (playerRef == null) {
-      return;
-    }
     const ref = playerRef;
 
     const handler = (e) => {

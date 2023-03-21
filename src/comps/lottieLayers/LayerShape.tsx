@@ -55,9 +55,13 @@ type ShapeProps = {
 const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
   //try to find color attr:
   const isGroup = shape.ty === shapeTypes.group;
-  const isGradient = shape.ty === (shapeTypes.gfill || shapeTypes.gStroke);
+  const isSolidColor =
+    shape.ty === shapeTypes.fill || shape.ty === shapeTypes.stroke;
+  const isGradColor =
+    shape.ty === shapeTypes.gfill || shape.ty === shapeTypes.gStroke;
 
-  const color: LottieColor = shape.c;
+  const solidColor: LottieColor = isSolidColor && shape.c;
+  const gradColor: LottieColor = isGradColor && shape.g.k;
 
   function handleColorClick() {
     onChangeColor && onChangeColor();
@@ -79,10 +83,12 @@ const Shape: React.FC<ShapeProps> = ({ shape, onChangeColor }) => {
         name: {shape.nm} | type: {shapeTypeToName(shape.ty)} ({shape.ty})
       </div>
 
-      {color && <ShapeColor color={color} onclick={handleColorClick} />}
-      {/* {isGradient && (
+      {solidColor && (
+        <ShapeColor color={solidColor} onclick={handleColorClick} />
+      )}
+      {gradColor && (
         <ShapeColorGradient shape={shape} onclick={handleColorClick} />
-      )} */}
+      )}
     </div>
   );
 };

@@ -18,22 +18,9 @@ const ColorPalette: React.FC<Props> = ({}) => {
   const groupedColors = LottieUtils.groupColors(colors);
 
   function handleColorClick(swatch: ColorRefGroup) {
-    const newColor = [Math.random(), Math.random(), Math.random(), 1];
-    swatch.refs.forEach((ref) => {
-      if (ref.type === "simple") {
-        ref.ref.k = [...newColor];
-      }
-      if (ref.type === "anim") {
-        ref.ref.k[ref.animIdx].s = [...newColor];
-      }
-      if (ref.type === "text") {
-        ref.ref.fc = [...newColor];
-      }
-      if (ref.type === "solid") {
-        ref.ref.sc = LottieUtils.rgbToHex(newColor);
-        console.log(ref.ref.sc);
-      }
-    });
+    const newColorArr = [Math.random(), Math.random(), Math.random(), 1];
+    const newColorHex = LottieUtils.rgbToHex(newColorArr);
+    LottieUtils.setLottieColor(swatch.refs, newColorHex);
     lottie.setJson((s) => ({ ...s }));
   }
 
@@ -42,7 +29,7 @@ const ColorPalette: React.FC<Props> = ({}) => {
       scheme: groupedColors.map((color, i) => ({
         name: `color ${i}`,
         description: `color ${i} description`,
-        origColorStr: LottieUtils.rgbToHex(color.color),
+        origColorStr: color.colorHex,
       })),
     };
     console.log(JSON.stringify(colorEdits, null, 2));
@@ -68,7 +55,7 @@ const ColorPalette: React.FC<Props> = ({}) => {
               <div
                 className={styles.color}
                 onClick={() => handleColorClick(swatch)}
-                style={{ backgroundColor: RGBA(swatch.color) }}
+                style={{ backgroundColor: swatch.colorHex }}
               ></div>
               <div>
                 refs: {JSON.stringify(swatch.refs.length)}

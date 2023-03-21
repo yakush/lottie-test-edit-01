@@ -1,6 +1,7 @@
 import React from "react";
 import { LottieLayer } from "../../types/LottieLayer";
 import { hexToRgb, rgbToHex } from "../../utils/cssUtils";
+import ShapeColorItem from "./ShapeColorItem";
 
 type Props = {
   layer: LottieLayer;
@@ -8,13 +9,9 @@ type Props = {
 };
 
 const SolidColor: React.FC<Props> = ({ layer, onclick }) => {
-  
   const colorHex = layer?.sc; //hex string!
-  
-  function handleColorClick(e) {
-    e.preventDefault();
-    e.stopPropagation();
-  
+
+  function handleColorClick() {
     layer.sc = rgbToHex(
       255 * Math.random(),
       255 * Math.random(),
@@ -23,37 +20,8 @@ const SolidColor: React.FC<Props> = ({ layer, onclick }) => {
     onclick && onclick();
   }
 
-  return (
-    <div>
-      <div>
-        <div>
-          <div
-            style={{
-              backgroundColor: colorHex,
-              userSelect: "none",
-              cursor: "pointer",
-              border: "solid 2px black",
-              borderRadius: 5,
-              padding: "2px 20px",
-              marginRight: 5,
-              display: "inline-block",
-            }}
-            onClick={(e) => handleColorClick(e)}
-          >
-            COLOR
-          </div>
-          {colorHex}
-        </div>
-      </div>
-    </div>
-  );
+  return <ShapeColorItem colorHex={colorHex} onclick={handleColorClick} />;
 };
 
-//-------------------------------------------------------
-
-function RGBA(arr: number[]) {
-  const [r, g, b, a = 1] = arr;
-  return `rgba(${r * 255}, ${g * 255}, ${b * 255}, ${a})`;
-}
 
 export default SolidColor;

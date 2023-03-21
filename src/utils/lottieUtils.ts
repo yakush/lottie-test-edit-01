@@ -70,6 +70,28 @@ export class LottieUtils {
       if (ref.type === "anim") {
         ref.ref.k[ref.animIdx].s = LottieUtils.hexToRgb(colorHex);
       }
+
+      if (ref.type === "gradSimple") {
+        const { gradIdx, gradStopPosition } = ref;
+        const gradStopColor = LottieUtils.hexToRgb(colorHex);
+        gradStopColor.length = 3; //remove alpha
+
+        ref.ref.k[gradIdx * 4 + 0] = gradStopPosition;
+        ref.ref.k[gradIdx * 4 + 1] = gradStopColor[0];
+        ref.ref.k[gradIdx * 4 + 2] = gradStopColor[1];
+        ref.ref.k[gradIdx * 4 + 3] = gradStopColor[2];
+      }
+      if (ref.type === "gradAnim") {
+        const { gradIdx, gradStopPosition, animIdx } = ref;
+        const gradStopColor = LottieUtils.hexToRgb(colorHex);
+        gradStopColor.length = 3; //remove alpha
+
+        ref.ref.k[animIdx].s[gradIdx * 4 + 0] = gradStopPosition;
+        ref.ref.k[animIdx].s[gradIdx * 4 + 1] = gradStopColor[0];
+        ref.ref.k[animIdx].s[gradIdx * 4 + 2] = gradStopColor[1];
+        ref.ref.k[animIdx].s[gradIdx * 4 + 3] = gradStopColor[2];
+      }
+      
       if (ref.type === "text") {
         ref.ref.fc = LottieUtils.hexToRgb(colorHex);
       }
@@ -142,6 +164,7 @@ export class LottieUtils {
     if (allColors || LottieUtils.compareColorsHex(layerColor, colorHex)) {
       refs.push({
         type: "solid",
+        hexNormalized: normalizeHexString(layerColor),
         ref: layer,
       });
     }
@@ -164,6 +187,7 @@ export class LottieUtils {
     if (allColors || LottieUtils.compareColorsHex(layerColor, colorHex)) {
       refs.push({
         type: "text",
+        hexNormalized: layerColor,
         ref: textNode,
       });
     }
@@ -188,48 +212,123 @@ export class LottieUtils {
 
   static getShapeColorRefs(shape: LottieShape, colorHex?: string): ColorRef[] {
     const refs: ColorRef[] = [];
+    const type = shape.ty;
 
-    if (shape.ty === shapeTypes.group) {
+    //group
+    if (type === shapeTypes.group) {
       const items: LottieShape[] = shape.it || [];
       items.forEach((shape) => {
         refs.push(...LottieUtils.getShapeColorRefs(shape, colorHex));
       });
-      return refs;
     }
 
-    const color: LottieColor = shape.c;
-    if (!color) {
-      return refs;
-    }
-
-    if (color.a === 0) {
-      //simple
-      const shapeColorArr = color.k;
-      const shapeColorHex = this.rgbToHex(shapeColorArr);
-      const allColors = colorHex == null;
-      if (allColors || LottieUtils.compareColorsHex(shapeColorHex, colorHex)) {
-        refs.push({
-          type: "simple",
-          ref: color,
-        });
+    //solids
+    if (type === shapeTypes.fill || type === shapeTypes.stroke) {
+      const color: LottieColor = shape.c;
+      if (!color) {
+        return refs;
       }
-    } else {
-      //anim
-      color.k.forEach((keyframe, i) => {
-        const keyframeColorArr = keyframe.s;
-        const keyframeColorHex = this.rgbToHex(keyframeColorArr);
+
+      if (color.a === 0) {
+        //simple
+        const shapeColorArr = color.k;
+        const shapeColorHex = this.rgbToHex(shapeColorArr);
         const allColors = colorHex == null;
         if (
           allColors ||
-          LottieUtils.compareColorsHex(keyframeColorHex, colorHex)
+          LottieUtils.compareColorsHex(shapeColorHex, colorHex)
         ) {
           refs.push({
-            type: "anim",
-            animIdx: i,
+            type: "simple",
+            hexNormalized: shapeColorHex,
             ref: color,
           });
         }
-      });
+      } else {
+        //anim
+        color.k.forEach((keyframe, i) => {
+          const keyframeColorArr = keyframe.s;
+          const keyframeColorHex = this.rgbToHex(keyframeColorArr);
+          const allColors = colorHex == null;
+          if (
+            allColors ||
+            LottieUtils.compareColorsHex(keyframeColorHex, colorHex)
+          ) {
+            refs.push({
+              type: "anim",
+              hexNormalized: keyframeColorHex,
+              animIdx: i,
+              ref: color,
+            });
+          }
+        });
+      }
+    }
+
+    //gradients
+    if (type === shapeTypes.gfill || type === shapeTypes.gStroke) {
+      //g.k =  {anim / simple}
+      const color: LottieColor = shape.g.k;
+      if (!color) {
+        return refs;
+      }
+
+      if (color.a === 0) {
+        //simple grad
+        const numColors = color.k.length / 4;
+        for (let i = 0; i < numColors; i++) {
+          const pos = color.k[i * 4 + 0];
+          const r = color.k[i * 4 + 1];
+          const g = color.k[i * 4 + 2];
+          const b = color.k[i * 4 + 3];
+
+          const gradStopColorArr = [r, b, g];
+          const gradStopColorHex = LottieUtils.rgbToHex(gradStopColorArr);
+          const allColors = colorHex == null;
+
+          if (
+            allColors ||
+            LottieUtils.compareColorsHex(gradStopColorHex, colorHex)
+          ) {
+            refs.push({
+              type: "gradSimple",
+              hexNormalized: gradStopColorHex,
+              ref: color,
+              gradStopPosition: pos,
+              gradIdx: i,
+            });
+          }
+        }
+      } else {
+        //anim grad
+        color.k.forEach((keyframe, i) => {
+          const numColors = keyframe.s.length / 4;
+          for (let i = 0; i < numColors; i++) {
+            const pos = keyframe.s[i * 4 + 0];
+            const r = keyframe.s[i * 4 + 1];
+            const g = keyframe.s[i * 4 + 2];
+            const b = keyframe.s[i * 4 + 3];
+
+            const gradStopColorArr = [r, b, g];
+            const gradStopColorHex = LottieUtils.rgbToHex(gradStopColorArr);
+            const allColors = colorHex == null;
+
+            if (
+              allColors ||
+              LottieUtils.compareColorsHex(gradStopColorHex, colorHex)
+            ) {
+              refs.push({
+                type: "gradAnim",
+                hexNormalized: gradStopColorHex,
+                ref: color,
+                animIdx: i,
+                gradStopPosition: pos,
+                gradIdx: i,
+              });
+            }
+          }
+        });
+      }
     }
 
     return refs;
@@ -309,73 +408,22 @@ export class LottieUtils {
     return a === b;
   }
 
-  static groupColors(colors: ColorRef[]) {
+  static groupColors(colorsRefs: ColorRef[]) {
     const groups: ColorRefGroup[] = [];
 
-    colors.forEach((color) => {
-      if (color.type === "anim") {
-        const colorArray = color.ref.k[color.animIdx].s;
-        let group = groups.find((x) =>
-          LottieUtils.compareColors(x.color, colorArray)
-        );
-        if (!group) {
-          group = {
-            color: colorArray,
-            refs: [],
-          };
-          groups.push(group);
-        }
-        group.refs.push(color);
+    colorsRefs.forEach((colorRef) => {
+      const colorHex = colorRef.hexNormalized;
+      let group = groups.find((g) =>
+        LottieUtils.compareColorsHex(g.colorHex, colorHex)
+      );
+      if (!group) {
+        group = {
+          colorHex: colorHex,
+          refs: [],
+        };
+        groups.push(group);
       }
-
-      if (color.type === "simple") {
-        const colorArray = color.ref.k;
-        let group = groups.find((x) =>
-          LottieUtils.compareColors(x.color, colorArray)
-        );
-        if (!group) {
-          group = {
-            color: colorArray,
-            refs: [],
-          };
-          groups.push(group);
-        }
-        group.refs.push(color);
-      }
-
-      if (color.type === "text") {
-        const colorArray = color.ref.fc;
-        let group = groups.find((x) =>
-          LottieUtils.compareColors(x.color, colorArray)
-        );
-        if (!group) {
-          group = {
-            color: colorArray,
-            refs: [],
-          };
-          groups.push(group);
-        }
-        group.refs.push(color);
-      }
-
-      if (color.type === "solid") {
-        const colorArray = LottieUtils.hexToRgb(color.ref.sc)?.map(
-          (x) => x / 255
-        );
-        if (colorArray) {
-          let group = groups.find((x) =>
-            LottieUtils.compareColors(x.color, colorArray)
-          );
-          if (!group) {
-            group = {
-              color: colorArray,
-              refs: [],
-            };
-            groups.push(group);
-          }
-          group.refs.push(color);
-        }
-      }
+      group.refs.push(colorRef);
     });
 
     return groups;
@@ -385,33 +433,52 @@ export class LottieUtils {
 //-------------------------------------------------------
 //-------------------------------------------------------
 
-function normalizeHexString(hex: string) {
+function normalizeHexString(hex?: string) {
   return LottieUtils.rgbToHex(LottieUtils.hexToRgb(hex));
 }
 
 export type ColorRefGroup = {
-  color: number[];
+  colorHex: string;
   refs: ColorRef[];
 };
 
 export type ColorRef =
   | {
       type: "text";
+      hexNormalized: string;
       ref: {
         fc: number[];
       };
     }
   | {
       type: "simple";
+      hexNormalized: string;
       ref: LottieSimpleColor;
     }
   | {
       type: "anim";
+      hexNormalized: string;
       ref: LottieAnimColor;
       animIdx: number;
     }
   | {
+      type: "gradSimple";
+      hexNormalized: string;
+      ref: LottieSimpleColor;
+      gradIdx: number;
+      gradStopPosition: number;
+    }
+  | {
+      type: "gradAnim";
+      hexNormalized: string;
+      ref: LottieAnimColor;
+      animIdx: number;
+      gradIdx: number;
+      gradStopPosition: number;
+    }
+  | {
       type: "solid";
+      hexNormalized: string;
       ref: SolidLayer;
     };
 

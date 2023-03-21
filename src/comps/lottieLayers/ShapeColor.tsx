@@ -7,6 +7,8 @@ import {
   LottieShape,
   LottieSimpleColor,
 } from "../../types/LottieShape";
+import { LottieUtils } from "../../utils/lottieUtils";
+import ShapeColorItem from "./ShapeColorItem";
 
 type Props = {
   color: LottieColor;
@@ -16,13 +18,11 @@ type Props = {
 
 const ShapeColor: React.FC<Props> = ({ color, onclick }) => {
   const isSimpleColor = isSimpleLottieColor(color);
-  const rgba = isSimpleColor
-    ? RGBA((color as LottieSimpleColor).k)
-    : RGBA([0, 0, 0, 0]);
+  const colorHex = isSimpleColor
+    ? LottieUtils.rgbToHex((color as LottieSimpleColor).k)
+    : "#000000ff";
 
-  function handleColorClick(e) {
-    e.preventDefault();
-    e.stopPropagation();
+  function handleColorClick() {
     color.k = [Math.random(), Math.random(), Math.random(), 1];
     onclick && onclick();
   }
@@ -60,37 +60,7 @@ const ShapeColor: React.FC<Props> = ({ color, onclick }) => {
     );
   }
 
-  return (
-    <div>
-      <div>
-        <div>
-          <div
-            style={{
-              backgroundColor: rgba,
-              userSelect: "none",
-              cursor: "pointer",
-              border: "solid 2px black",
-              borderRadius: 5,
-              padding: "2px 20px",
-              marginRight: 5,
-              display: "inline-block",
-            }}
-            onClick={(e) => handleColorClick(e)}
-          >
-            COLOR
-          </div>
-          {JSON.stringify(color.k.map((x) => Math.round(x * 255)))}
-        </div>
-      </div>
-    </div>
-  );
+  return <ShapeColorItem colorHex={colorHex} onclick={handleColorClick} />;
 };
-
-//-------------------------------------------------------
-
-function RGBA(arr: number[]) {
-  const [r, g, b, a = 1] = arr;
-  return `rgba(${r * 255}, ${g * 255}, ${b * 255}, ${a})`;
-}
 
 export default ShapeColor;

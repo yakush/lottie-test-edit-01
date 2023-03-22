@@ -36,7 +36,14 @@ const LottiePlayer: React.FC<Props> = ({}) => {
       refCurrentTime.current = e.currentTime / e.totalTime;
     };
 
+    
+    const handlerDestroy = (e) => {
+      console.log('destroyed!!!!!!');
+      
+    };
+
     ref.addEventListener("enterFrame", handler);
+    ref.addEventListener("destroy", handlerDestroy);
 
     const timer = setInterval(() => {
       refIsPaused.current = ref.isPaused;
@@ -46,6 +53,10 @@ const LottiePlayer: React.FC<Props> = ({}) => {
       try {
         ref.removeEventListener("enterFrame", handler);
       } catch (e) {}
+      try {
+        ref.addEventListener("destroy", handlerDestroy);
+      } catch (e) {}
+
       clearInterval(timer);
     };
   }, [playerRef]);

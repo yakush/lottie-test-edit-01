@@ -4,24 +4,24 @@
       {
         "name": "color 1",
         "description": "color 1 description",
-        "origColorStr": "#ee3124"
+        "origColorStr": "#ee3124ff"
       },
       {
         "name": "color 2",
         "description": "color 2 description",
-        "origColorStr": "#dc3224"
+        "origColorStr": "#dc3224ff"
       }
     ],
     "options": [
       {
         "name": "palate a",
         "description": "palate a is nice",
-        "colors": [ "#ed3124", "#db3224"]
+        "colors": ["#ed3124", "#db3224"]
       },
       {
         "name": "palate b",
         "description": "palate a is nice",
-        "colors": [ "#aa31ee", "#aa32aa"]
+        "colors": ["#aa31ee", "#aa32aa"]
       }
     ]
   },

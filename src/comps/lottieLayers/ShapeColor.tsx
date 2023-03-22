@@ -1,14 +1,12 @@
-import React, { useState } from "react";
-import { LottieLayer } from "../../types/LottieLayer";
+import React from "react";
 import {
   isSimpleLottieColor,
   LottieAnimColor,
   LottieColor,
-  LottieShape,
   LottieSimpleColor,
 } from "../../types/LottieShape";
 import { LottieUtils } from "../../utils/lottieUtils";
-import ShapeColorItem from "./ShapeColorItem";
+import ColorSlot from "../ColorSlot";
 
 type Props = {
   color: LottieColor;
@@ -18,8 +16,8 @@ type Props = {
 
 const ShapeColor: React.FC<Props> = ({ color, onclick }) => {
   const isSimpleColor = isSimpleLottieColor(color);
-  const colorHex = isSimpleColor
-    ? LottieUtils.rgbToHex((color as LottieSimpleColor).k)
+  const colorArray = isSimpleColor
+    ? (color as LottieSimpleColor).k
     : "#000000ff";
 
   function handleColorClick() {
@@ -60,7 +58,14 @@ const ShapeColor: React.FC<Props> = ({ color, onclick }) => {
     );
   }
 
-  return <ShapeColorItem colorHex={colorHex} onclick={handleColorClick} />;
+  return (
+    <ColorSlot
+      color={colorArray}
+      onClick={handleColorClick}
+      showArray={true}
+      showHex={true}
+    />
+  );
 };
 
 export default ShapeColor;

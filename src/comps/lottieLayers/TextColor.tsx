@@ -1,7 +1,7 @@
 import React from "react";
 import { LottieLayer } from "../../types/LottieLayer";
 import { LottieUtils } from "../../utils/lottieUtils";
-import ShapeColorItem from "./ShapeColorItem";
+import ColorSlot from "../ColorSlot";
 
 type Props = {
   layer: LottieLayer;
@@ -30,10 +30,7 @@ const TextColor: React.FC<Props> = ({ layer, onclick }) => {
   }
 
   return (
-    <ShapeColorItem
-      colorHex={LottieUtils.rgbToHex(color)}
-      onclick={handleColorClick}
-    />
+    <ColorSlot color={color} onClick={handleColorClick} showArray={true} showHex={true}/>
   );
 };
 

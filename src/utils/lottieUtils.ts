@@ -91,7 +91,7 @@ export class LottieUtils {
         ref.ref.k[animIdx].s[gradIdx * 4 + 2] = gradStopColor[1];
         ref.ref.k[animIdx].s[gradIdx * 4 + 3] = gradStopColor[2];
       }
-      
+
       if (ref.type === "text") {
         ref.ref.fc = LottieUtils.hexToRgb(colorHex);
       }
@@ -276,13 +276,13 @@ export class LottieUtils {
       if (color.a === 0) {
         //simple grad
         const numColors = color.k.length / 4;
-        for (let i = 0; i < numColors; i++) {
-          const pos = color.k[i * 4 + 0];
-          const r = color.k[i * 4 + 1];
-          const g = color.k[i * 4 + 2];
-          const b = color.k[i * 4 + 3];
+        for (let gradIdx = 0; gradIdx < numColors; gradIdx++) {
+          const pos = color.k[gradIdx * 4 + 0];
+          const r = color.k[gradIdx * 4 + 1];
+          const g = color.k[gradIdx * 4 + 2];
+          const b = color.k[gradIdx * 4 + 3];
 
-          const gradStopColorArr = [r, b, g];
+          const gradStopColorArr = [r, g, b];
           const gradStopColorHex = LottieUtils.rgbToHex(gradStopColorArr);
           const allColors = colorHex == null;
 
@@ -295,21 +295,21 @@ export class LottieUtils {
               hexNormalized: gradStopColorHex,
               ref: color,
               gradStopPosition: pos,
-              gradIdx: i,
+              gradIdx: gradIdx,
             });
           }
         }
       } else {
         //anim grad
-        color.k.forEach((keyframe, i) => {
+        color.k.forEach((keyframe, animIdx) => {
           const numColors = keyframe.s.length / 4;
-          for (let i = 0; i < numColors; i++) {
-            const pos = keyframe.s[i * 4 + 0];
-            const r = keyframe.s[i * 4 + 1];
-            const g = keyframe.s[i * 4 + 2];
-            const b = keyframe.s[i * 4 + 3];
+          for (let gradIdx = 0; gradIdx < numColors; gradIdx++) {
+            const pos = keyframe.s[gradIdx * 4 + 0];
+            const r = keyframe.s[gradIdx * 4 + 1];
+            const g = keyframe.s[gradIdx * 4 + 2];
+            const b = keyframe.s[gradIdx * 4 + 3];
 
-            const gradStopColorArr = [r, b, g];
+            const gradStopColorArr = [r, g, b];
             const gradStopColorHex = LottieUtils.rgbToHex(gradStopColorArr);
             const allColors = colorHex == null;
 
@@ -321,9 +321,9 @@ export class LottieUtils {
                 type: "gradAnim",
                 hexNormalized: gradStopColorHex,
                 ref: color,
-                animIdx: i,
+                animIdx: animIdx,
                 gradStopPosition: pos,
-                gradIdx: i,
+                gradIdx: gradIdx,
               });
             }
           }

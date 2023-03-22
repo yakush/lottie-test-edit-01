@@ -1,7 +1,8 @@
 import React from "react";
 import { LottieLayer } from "../../types/LottieLayer";
-import { hexToRgb, rgbToHex } from "../../utils/cssUtils";
-import ShapeColorItem from "./ShapeColorItem";
+import { LottieUtils } from "../../utils/lottieUtils";
+
+import ColorSlot from "../ColorSlot";
 
 type Props = {
   layer: LottieLayer;
@@ -12,16 +13,22 @@ const SolidColor: React.FC<Props> = ({ layer, onclick }) => {
   const colorHex = layer?.sc; //hex string!
 
   function handleColorClick() {
-    layer.sc = rgbToHex(
-      255 * Math.random(),
-      255 * Math.random(),
-      255 * Math.random()
-    );
+    layer.sc = LottieUtils.rgbToHex([
+      Math.random(),
+      Math.random(),
+      Math.random(),
+    ]);
     onclick && onclick();
   }
 
-  return <ShapeColorItem colorHex={colorHex} onclick={handleColorClick} />;
+  return (
+    <ColorSlot
+      color={colorHex}
+      onClick={handleColorClick}
+      showArray={true}
+      showHex={true}
+    />
+  );
 };
-
 
 export default SolidColor;

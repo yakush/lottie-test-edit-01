@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { AnimationItem } from "lottie-web";
-import GifRenderer from "./utils/gifRenderer";
+import GifRenderer from "./utils/gifREnderer2";
 
 function useGifRenderer(
   onFinish?: (blob: Blob, data: Uint8Array) => void
